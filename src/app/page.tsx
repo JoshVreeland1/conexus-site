@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import PhoneDemo from '@/components/PhoneDemo'; // make sure this path matches your file
+import PhoneDemo from '@/components/PhoneDemo';
 
 export default function HomePage() {
   const [email, setEmail] = useState('');
@@ -32,13 +32,15 @@ export default function HomePage() {
       }
       setStatus('success');
       setMessage("You're on the list! We'll be in touch.");
-      setEmail(''); setName(''); setRole('Landlord / PM');
+      setEmail('');
+      setName('');
+      setRole('Landlord / PM');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong.';
-      setStatus('error'); setMessage(msg);
-    } finally {
-      setStatus('idle');
+      setStatus('error');
+      setMessage(msg);
     }
+    // NOTE: do NOT reset to 'idle' here, so the success/error notice stays visible.
   }
 
   return (
@@ -48,9 +50,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6 py-12 lg:py-16">
           <div className="grid lg:grid-cols-2 gap-10 items-start">
             {/* Left: brand + value + primary CTA */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1" id="waitlist">
               <div className="flex items-center gap-3 mb-6">
-                <Image src="/logo2.png" alt="Conexus" width={400} height={400} />
+                <Image src="/logo2.png" alt="Conexus" width={200} height={200} priority />
               </div>
 
               <h1 className="text-[42px] sm:text-6xl font-semibold leading-[1.05] tracking-tight mb-4">
@@ -63,7 +65,7 @@ export default function HomePage() {
                 Owners, PMs, and trades get a reliable, modern workflow.
               </p>
 
-              {/* Credibility bullets (user + investor POV) */}
+              {/* Credibility bullets */}
               <ul className="grid sm:grid-cols-2 gap-3 text-white/90 mb-7">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5">⚡</span>
@@ -84,7 +86,7 @@ export default function HomePage() {
               </ul>
 
               {/* Primary form */}
-              <form onSubmit={submit} className="flex flex-wrap items-center gap-3">
+              <form onSubmit={submit} className="flex flex-wrap items-center gap-3" aria-label="Join waitlist form">
                 <input
                   type="text"
                   placeholder="Name (optional)"
@@ -104,29 +106,37 @@ export default function HomePage() {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#EDDC0B]"
+                  aria-label="Role"
                 >
                   <option className="text-black">Landlord / PM</option>
                   <option className="text-black">Contractor</option>
                   <option className="text-black">Investor</option>
+                  <option className="text-black">Tenant</option>
                 </select>
 
                 <button
                   type="submit"
                   className="rounded-xl bg-[#EDDC0B] px-5 py-3 font-bold text-[#1F1F1F] hover:brightness-95 active:brightness-90 transition"
                 >
-                  Join the Waitlist
+                  {status === 'loading' ? 'Joining…' : 'Join the Waitlist'}
                 </button>
               </form>
 
               {/* Form feedback */}
               <div className="mt-3 min-h-[28px]">
                 {status === 'error' && (
-                  <div className="inline-block rounded-md border border-[#FFB3B3] bg-[#FFE8E8] px-3 py-2 text-[#7F1D1D]">
+                  <div
+                    role="alert"
+                    className="inline-block rounded-md border border-[#FFB3B3] bg-[#FFE8E8] px-3 py-2 text-[#7F1D1D]"
+                  >
                     {message || 'Something went wrong.'}
                   </div>
                 )}
                 {status === 'success' && (
-                  <div className="inline-block rounded-md border border-[#B7E4C7] bg-[#E8F9EE] px-3 py-2 text-[#064E3B]">
+                  <div
+                    role="status"
+                    className="inline-block rounded-md border border-[#B7E4C7] bg-[#E8F9EE] px-3 py-2 text-[#064E3B]"
+                  >
                     🎉 You’re on the list! We’ll be in touch.
                   </div>
                 )}
@@ -140,26 +150,24 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right: Interactive phone in a neat frame */}
+            {/* Right: Interactive phone */}
             <div className="order-1 lg:order-2">
               <div className="rounded-3xl bg-white/5 p-4 sm:p-6 border border-white/10">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex gap-2">
-                  </div>
+                  <div className="flex gap-2" aria-hidden="true" />
                   <Link href="/prototype" className="text-sm text-white/80 hover:text-white underline underline-offset-4">
                     Open full screen →
                   </Link>
                 </div>
-
-                {/* PhoneDemo sized to fully show the device. Adjust height if you want bigger/smaller. */}
-                <PhoneDemo phoneHeight={800} />
+                {/* PhoneDemo auto-sizes to viewport; no extra props needed */}
+                <PhoneDemo />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* HOW IT WORKS (mentor POV: clarity of flow) */}
+      {/* HOW IT WORKS */}
       <section className="bg-white text-[#1F1F1F]">
         <div className="mx-auto max-w-7xl px-6 py-16">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-8">How Conexus Works</h2>
@@ -186,7 +194,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WHO IT'S FOR (user POV: clear segments) */}
+      {/* WHO IT'S FOR */}
       <section className="bg-[#0E1528] text-white">
         <div className="mx-auto max-w-7xl px-6 py-14">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-8">Made for every side of maintenance</h2>
@@ -219,7 +227,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECONDARY CTA (investor POV: traction signal via waitlist) */}
+      {/* SECONDARY CTA */}
       <section className="bg-white text-[#1F1F1F]">
         <div className="mx-auto max-w-4xl px-6 py-14 text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
@@ -229,7 +237,7 @@ export default function HomePage() {
             We’re onboarding pilot customers now. Join the waitlist and we’ll reach out with details.
           </p>
 
-          <form onSubmit={submit} className="flex flex-wrap items-center justify-center gap-3">
+          <form onSubmit={submit} className="flex flex-wrap items-center justify-center gap-3" aria-label="Join waitlist form (footer)">
             <input
               type="text"
               placeholder="Name (optional)"
@@ -249,6 +257,7 @@ export default function HomePage() {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="rounded-xl border border-black/10 bg-white px-4 py-3"
+              aria-label="Role"
             >
               <option>Landlord / PM</option>
               <option>Contractor</option>
@@ -259,7 +268,7 @@ export default function HomePage() {
               type="submit"
               className="rounded-xl bg-[#14213D] px-5 py-3 font-bold text-white hover:opacity-90 transition"
             >
-              Join the Waitlist
+              {status === 'loading' ? 'Joining…' : 'Join the Waitlist'}
             </button>
           </form>
 
