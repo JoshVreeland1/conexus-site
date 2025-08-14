@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Messages – Conexus PM</title>
+    
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+    body{background:#F9FAFB;color:#1F1F1F;}
+    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+    .avatar{width:42px;height:42px;border-radius:50%;background:#C75C24;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;}
+    header{display:flex;align-items:center;justify-content:center;padding:18px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    header h1{font-size:18px;font-weight:600;color:#14213D;}
+    footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+    footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;} footer img{width:20px;height:20px;margin-bottom:4px;}
+    .chat-header{display:flex;align-items:center;gap:10px;padding:12px;background:#fff;border-bottom:1px solid #E5E5E5;}
+    .chat-header .avatar{width:34px;height:34px;font-size:13px;}
+    .chat-body{padding:16px 16px 100px;max-height:calc(100vh - 190px);overflow-y:auto;}
+    .bubble{padding:10px 14px;border-radius:14px;font-size:13px;max-width:80%;margin-bottom:12px;}
+    .mine{background:#C75C24;color:#fff;margin-left:auto;}
+    .theirs{background:#E5E5E5;color:#1F1F1F;margin-right:auto;}
+    .sendbar{position:fixed;bottom:56px;left:0;right:0;padding:8px 16px;background:#fff;display:flex;gap:8px;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+    .sendbar input{flex:1;border:1px solid #D4D4D4;border-radius:20px;padding:10px;font-size:13px;}
+    .sendbar button{padding:8px 16px;border-radius:20px;background:#C75C24;color:#fff;font-size:13px;}
+    </style></head><body>
+    
+    <header><h1>Messages</h1></header>
+    
+    <main id="inbox" style="padding:24px 24px 90px;">
+      <!-- conversation list -->
+      <div class="card" onclick="openChat('Sarah&nbsp;K.')">
+        <div class="avatar">SK</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;">Sarah K.</div>
+          <div style="font-size:12px;color:#6C7A89;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Thanks for the update! When will …</div>
+        </div>
+        <div style="font-size:10px;color:#6C7A89;">2 m</div>
+      </div>
+    
+      <div class="card" onclick="openChat('Bright&nbsp;Plumbing&nbsp;Co.')">
+        <div class="avatar">BP</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;">Bright Plumbing Co.</div>
+          <div style="font-size:12px;color:#6C7A89;">Quote submitted for job #3060.</div>
+        </div>
+        <div style="font-size:10px;color:#6C7A89;">1 h</div>
+      </div>
+    </main>
+    
+    <!-- chat pane (hidden until opened) -->
+    <section id="chat" style="display:none;">
+      <div class="chat-header">
+        <div class="avatar" id="chatAv"></div>
+        <div style="font-weight:600;" id="chatName"></div>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="bubble theirs">Hi, the leak is getting worse 😬</div>
+        <div class="bubble mine">Contractor is booked for today @ 3 PM.</div>
+      </div>
+    </section>
+    
+    <!-- send bar -->
+    <div class="sendbar" style="display:none;" id="sendBar">
+      <input type="text" placeholder="Type a message…" id="msgInp">
+      <button onclick="sendMsg()">Send</button>
+    </div>
+    
+    <footer>
+      <a href="pm-dashboard-mobile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png">Dashboard</a>
+      <a href="pm-analytics.html"><img src="https://img.icons8.com/ios-filled/50/14213D/combo-chart.png">Analytics</a>
+      <a href="pm-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png">Messages</a>
+    </footer>
+    
+    <script>
+    function openChat(name){
+      // swap to chat pane
+      document.getElementById('inbox').style.display='none';
+      document.getElementById('chat').style.display='block';
+      document.getElementById('sendBar').style.display='flex';
+      document.getElementById('chatName').textContent=name.replace(/&nbsp;/g,' ');
+      document.getElementById('chatAv').textContent=name.match(/\b\w/g).join('').toUpperCase().slice(0,2);
+    }
+    function sendMsg(){
+      const txt=document.getElementById('msgInp').value.trim();
+      if(!txt) return;
+      const div=document.createElement('div');
+      div.className='bubble mine';
+      div.textContent=txt;
+      document.getElementById('chatBody').appendChild(div);
+      document.getElementById('msgInp').value='';
+      // auto-scroll
+      document.getElementById('chatBody').scrollTop=document.getElementById('chatBody').scrollHeight;
+    }
+    </script>
+    </body></html>
+    

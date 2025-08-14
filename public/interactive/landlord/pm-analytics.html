@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Analytics – Conexus PM</title>
+    
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+    body{background:#F9FAFB;color:#1F1F1F;}
+    .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:16px;}
+    header{display:flex;align-items:center;justify-content:center;padding:18px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    header h1{font-size:18px;font-weight:600;color:#14213D;}
+    .kpi{font-size:26px;font-weight:700;color:#14213D;}
+    .kpi-label{font-size:12px;margin-top:4px;color:#6C7A89;}
+    footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+    footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;} footer img{width:20px;height:20px;margin-bottom:4px;}
+    /* simple progress bar */
+    .bar{background:#E5E5E5;height:8px;border-radius:4px;margin-top:8px;overflow:hidden;}
+    .fill{height:100%;background:#C75C24;}
+    </style></head><body>
+    
+    <header><h1>Analytics</h1></header>
+    
+    <main style="padding:24px 24px 90px;">
+      <!-- KPIs -->
+      <div class="card" style="display:flex;justify-content:space-between;text-align:center;">
+        <div style="flex:1;">
+          <div class="kpi">12</div><div class="kpi-label">Open&nbsp;Jobs</div>
+        </div>
+        <div style="flex:1;">
+          <div class="kpi">4.8&nbsp;days</div><div class="kpi-label">Avg&nbsp;Turnaround</div>
+        </div>
+        <div style="flex:1;">
+          <div class="kpi">$1.2k</div><div class="kpi-label">Avg&nbsp;Job&nbsp;Cost</div>
+        </div>
+      </div>
+    
+      <!-- Job volume chart (last 6 mo) -->
+      <div class="card">
+        <h2 style="font-size:14px;font-weight:600;margin-bottom:14px;">Monthly Volume</h2>
+        <!-- rudimentary bars -->
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+          <div><div class="bar"><div class="fill" style="width:60%;"></div></div><div class="kpi-label" style="text-align:center;margin-top:4px;">Feb</div></div>
+          <div><div class="bar"><div class="fill" style="width:80%;"></div></div><div class="kpi-label" style="text-align:center;margin-top:4px;">Mar</div></div>
+          <div><div class="bar"><div class="fill" style="width:100%;"></div></div><div class="kpi-label" style="text-align:center;margin-top:4px;">Apr</div></div>
+          <div><div class="bar"><div class="fill" style="width:90%;"></div></div><div class="kpi-label" style="text-align:center;margin-top:4px;">May</div></div>
+          <div><div class="bar"><div class="fill" style="width:70%;"></div></div><div class="kpi-label" style="text-align:center;margin-top:4px;">Jun</div></div>
+          <div><div class="bar"><div class="fill" style="width:50%;"></div></div><div class="kpi-label" style="text-align:center;margin-top:4px;">Jul</div></div>
+        </div>
+      </div>
+    
+      <!-- Cost distribution -->
+      <div class="card">
+        <h2 style="font-size:14px;font-weight:600;margin-bottom:14px;">Cost Breakdown</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;">
+            <span>Plumbing</span><span>$4,300</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;">
+            <span>HVAC</span><span>$2,800</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;">
+            <span>Electrical</span><span>$1,900</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;">
+            <span>General&nbsp;Maint.</span><span>$1,500</span>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <footer>
+      <a href="pm-dashboard-mobile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png">Dashboard</a>
+      <a href="pm-analytics.html"><img src="https://img.icons8.com/ios-filled/50/14213D/combo-chart.png">Analytics</a>
+      <a href="pm-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png">Messages</a>
+    </footer>
+    </body></html>
+    

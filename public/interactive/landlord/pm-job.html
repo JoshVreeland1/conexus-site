@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Job #3060 – PM View</title>
+
+<!-- ===== SHARED INLINE STYLES ===== -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+body{background:#F9FAFB;color:#1F1F1F;}
+a{text-decoration:none;color:#C75C24;}
+button{cursor:pointer;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:14px;}
+.btn-primary{background:#C75C24;color:#fff;}
+.btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+.btn-accept{background:#2BA84A;color:#fff;}
+.btn-reject{background:#14213D;color:#fff;}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:16px;}
+header{display:flex;align-items:center;padding:18px 24px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+header img{width:22px;height:22px;margin-right:12px;cursor:pointer;}
+header h1{font-size:18px;font-weight:600;color:#14213D;}
+.pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;}
+.pill-open{background:#F0A202;}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 24px;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://img.icons8.com/ios-filled/50/14213D/left.png" onclick="history.back()">
+  <h1>#3060 • Pipe Burst</h1>
+</header>
+
+<main style="padding:24px 24px 140px;">
+  <!-- Job meta -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-weight:600;">Leaking kitchen pipe</div>
+      <span class="pill pill-open">Open</span>
+    </div>
+    <div style="font-size:13px;margin-top:6px;">Unit 12B • 123 Lakeview Villas</div>
+    <p style="font-size:13px;margin-top:12px;line-height:1.4;">
+      Tenant reported water pooling beneath sink. Shut-off valve closed; drywall damp.
+    </p>
+    <!-- photo -->
+    <img src="../pipe_burst.jpg" alt="Issue photo" style="width:100%;border-radius:8px;margin-top:14px;">
+  </div>
+
+  <!-- Quotes -->
+  <h2 style="font-size:16px;font-weight:600;margin:6px 0 12px;">Contractor Quotes</h2>
+
+  <div class="card" id="quoteCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-weight:600;">Bright Plumbing Co.</div>
+        <div style="font-size:13px;margin-top:2px;">ETA: today @ 3 PM</div>
+      </div>
+      <div style="font-size:18px;font-weight:700;">$340</div>
+    </div>
+
+    <p style="font-size:13px;margin-top:12px;line-height:1.4;">
+      Replace damaged P-trap, dry wall patch, and moisture barrier install. 2-hr job.
+    </p>
+
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn-accept" style="flex:1;" onclick="approve()">Approve</button>
+      <button class="btn-reject" style="flex:1;" onclick="alert('Contractor will be notified');">Request Change</button>
+    </div>
+  </div>
+</main>
+
+<!-- Sticky action footer -->
+<footer>
+  <button class="btn-outline" style="width:100%;" onclick="alert('Chat opened')">Message Tenant & Contractor</button>
+</footer>
+
+<script>
+function approve(){
+  document.getElementById('quoteCard').querySelector('.pill')?.remove();
+  alert('Quote approved! Contractor notified.');
+  // TODO: push approval to backend
+}
+</script>
+
+</body>
+</html>

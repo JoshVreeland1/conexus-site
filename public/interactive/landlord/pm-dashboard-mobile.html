@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>PM Dashboard – Conexus</title>
+    
+    <!-- ===== SHARED INLINE STYLES ===== -->
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+    body{background:#F9FAFB;color:#1F1F1F;} a{text-decoration:none;color:#C75C24;}
+    button{cursor:pointer;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:14px;}
+    .btn-primary{background:#C75C24;color:#fff;} .btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+    .btn-details{background:#C75C24;color:#fff;padding:6px 14px;font-size:12px;border-radius:6px;}
+    .filter-btn{padding:6px 14px;border-radius:20px;font-size:12px;border:1px solid #C75C24;background:#fff;color:#C75C24;cursor:pointer;}
+    .filter-btn.active{background:#C75C24;color:#fff;}
+    .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:16px;}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    header h1{font-size:18px;font-weight:600;color:#14213D;}
+    .pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;}
+    .pill-open{background:#F0A202;} .pill-wait{background:#F0A202;} .pill-prog{background:#2BA84A;} .pill-done{background:#14213D;}
+    footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+    footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;} footer img{width:20px;height:20px;margin-bottom:4px;}
+    /* NEW: wrap filter pills cleanly */
+    .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+    </style></head><body>
+    
+    <header>
+      <h1>My Properties</h1>
+      <button class="btn-outline" style="padding:6px 14px;font-size:12px;">Profile</button>
+    </header>
+    
+    <main style="padding:24px 24px 90px;">
+      <!-- Filters -->
+      <div class="filters">
+        <span class="filter-btn active" onclick="filter('all',this)">All</span>
+        <span class="filter-btn" onclick="filter('open',this)">Open</span>
+        <span class="filter-btn" onclick="filter('waiting',this)">Await&nbsp;Quote</span>
+        <span class="filter-btn" onclick="filter('approval',this)">Await&nbsp;Approval</span>
+        <span class="filter-btn" onclick="filter('done',this)">Completed</span>
+      </div>
+    
+      <!-- Job cards -->
+      <div id="jobList">
+        <div class="card" data-status="open" onclick="openJob('pm-job.html')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-weight:600;">#3060 • Pipe Burst</div>
+            <span class="pill pill-open">Open</span>
+          </div>
+          <div style="font-size:13px;margin-top:6px;">Unit 12B • 123 Lakeview Villas</div>
+          <div style="font-size:12px;margin-top:10px;color:#6C7A89;">Submitted 2 h ago by Sarah K.</div>
+        </div>
+    
+        <div class="card" data-status="waiting" onclick="openJob('pm-job.html')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-weight:600;">#3059 • AC Not Cooling</div>
+            <span class="pill pill-wait">Await Quote</span>
+          </div>
+          <div style="font-size:13px;margin-top:6px;">Unit 8A • 456 Summit Ridge</div>
+          <div style="font-size:12px;margin-top:10px;color:#6C7A89;">Submitted yesterday by Juan L.</div>
+        </div>
+      </div>
+    </main>
+    
+    <footer>
+      <a href="pm-dashboard-mobile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png">Dashboard</a>
+      <a href="pm-analytics.html"><img src="https://img.icons8.com/ios-filled/50/14213D/combo-chart.png">Analytics</a>
+      <a href="pm-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png">Messages</a>
+    </footer>
+    
+    <script>
+    function filter(key,el){
+      document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('#jobList .card').forEach(c=>{
+        c.style.display=(key==='all'||c.dataset.status===key)?'block':'none';
+      });
+    }
+    function openJob(page){location.href=page;}
+    </script>
+    </body></html>
+    

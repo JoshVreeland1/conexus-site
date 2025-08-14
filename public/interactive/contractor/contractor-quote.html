@@ -1,0 +1,176 @@
+<!-- contractor-quote.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Create Quote – Job #3060</title>
+
+<!-- ===== SHARED INLINE STYLES ===== -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+body{background:#F9FAFB;color:#1F1F1F;}
+header{display:flex;align-items:center;padding:18px 24px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+header img{width:22px;height:22px;margin-right:12px;cursor:pointer;}
+header h1{font-size:18px;font-weight:600;color:#14213D;}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:16px;}
+h2{font-size:14px;font-weight:600;margin:14px 0 6px;}
+table{width:100%;border-collapse:collapse;margin-top:8px;}
+th,td{padding:8px;font-size:13px;border-bottom:1px solid #E5E5E5;}
+input[type=text],input[type=number],select{width:100%;padding:8px;border:1px solid #D4D4D4;border-radius:6px;font-size:13px;}
+button{cursor:pointer;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:14px;}
+.btn-primary{background:#C75C24;color:#fff;}
+.btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+.add-row{margin-top:10px;width:100%;background:#fff;border:2px dashed #C75C24;color:#C75C24;padding:8px;border-radius:8px;font-size:13px;}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 24px;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+.total-line{display:flex;justify-content:space-between;font-weight:600;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://img.icons8.com/ios-filled/50/14213D/left.png" onclick="history.back()">
+  <h1>Create Quote</h1>
+</header>
+
+<main style="padding:24px 24px 140px;">
+  <!-- Work-order summary -->
+  <div class="card">
+    <h2>Work Order #3060</h2>
+    <p style="font-size:13px;line-height:1.4;">
+      <strong>Issue:</strong> Leaking kitchen pipe<br>
+      <strong>Location:</strong> 123 Lakeview Villas, Unit 12B<br>
+      <strong>ETA:</strong> 10/3/2022 at 3:00 PM
+    </p>
+  </div>
+
+  <!-- Base labor section -->
+  <div class="card">
+    <h2>Base Labor</h2>
+    <table id="baseTable">
+      <thead><tr><th style="width:60%;">Description</th><th style="width:25%;">Cost ($)</th><th></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><input type="text" value="Replace P-trap"></td>
+          <td><input type="number" value="120" min="0"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Drywall Patch &amp; Paint"></td>
+          <td><input type="number" value="220" min="0"></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="add-row" onclick="addBaseRow()">+ Add Labor Line</button>
+  </div>
+
+  <!-- Materials section -->
+  <div class="card">
+    <h2>Materials</h2>
+
+    <!-- store picker + search -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <select id="storeSel" style="flex:1;min-width:120px;">
+        <option value="Home Depot">Home Depot</option>
+        <option value="Lowe's">Lowe's</option>
+        <option value="Ace Hardware">Ace Hardware</option>
+        <option value="Local Supply">Local Supply</option>
+      </select>
+      <input type="text" id="matSearch" placeholder="Search item…" style="flex:2;">
+      <input type="number" id="matPrice" placeholder="Price $" min="0" style="width:90px;">
+      <button class="btn-outline" style="padding:8px 14px;font-size:12px;" onclick="addMaterial()">Add</button>
+    </div>
+
+    <table id="matTable">
+      <thead><tr>
+        <th>Item</th><th style="width:20%;">Cost ($)</th><th style="width:25%;">Store</th><th></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <button class="add-row" onclick="addMaterialRow()">+ Add Manual Row</button>
+  </div>
+
+  <!-- Totals -->
+  <div class="card">
+    <h2>Totals</h2>
+    <div class="total-line"><span>Base Labor</span><span id="baseTot">$0</span></div>
+    <div class="total-line"><span>Materials (cost)</span><span id="matTot">$0</span></div>
+    <div class="total-line"><span>Markup (15 %)</span><span id="markTot">$0</span></div>
+    <hr style="margin:10px 0;border:none;border-top:1px solid #E5E5E5;">
+    <div class="total-line" style="font-size:18px;"><span>Total</span><span id="grandTot">$0</span></div>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-primary" style="width:100%;" onclick="submitQuote()">Submit Quote</button>
+</footer>
+
+<script>
+/* ---------- row helpers ---------- */
+function addBaseRow(){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" placeholder="Labor task"></td>
+                <td><input type="number" placeholder="0" min="0"></td><td></td>`;
+  document.querySelector('#baseTable tbody').appendChild(tr);
+}
+
+function addMaterialRow(desc='',price='',store=''){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" value="${desc}"></td>
+                <td><input type="number" value="${price}" min="0"></td>
+                <td><input type="text" value="${store}"></td>
+                <td></td>`;
+  document.querySelector('#matTable tbody').appendChild(tr);
+}
+
+/* ---------- “Add” button w/ 15 % markup ---------- */
+function addMaterial(){
+  const item=document.getElementById('matSearch').value.trim();
+  const price=parseFloat(document.getElementById('matPrice').value||0);
+  const store=document.getElementById('storeSel').value;
+  if(!item||price<=0){alert('Enter item & price');return;}
+  addMaterialRow(item,price.toFixed(2),store);
+  document.getElementById('matSearch').value='';
+  document.getElementById('matPrice').value='';
+  calcTotals();
+}
+
+/* ---------- live total calculator ---------- */
+document.addEventListener('input',e=>{
+  if(e.target.matches('table input')) calcTotals();
+});
+function calcTotals(){
+  /* base labor */
+  let base=0;
+  document.querySelectorAll('#baseTable tbody input[type=number]').forEach(i=>base+=+i.value||0);
+
+  /* materials (cost only) */
+  let mat=0;
+  document.querySelectorAll('#matTable tbody input[type=number]').forEach(i=>mat+=+i.value||0);
+
+  const markup=mat*0.15;
+  const grand=base+mat+markup;
+
+  /* update UI */
+  id('baseTot').textContent='$'+base.toFixed(2);
+  id('matTot').textContent='$'+mat.toFixed(2);
+  id('markTot').textContent='$'+markup.toFixed(2);
+  id('grandTot').textContent='$'+grand.toFixed(2);
+}
+/* utility */
+function id(x){return document.getElementById(x);}
+
+/* ---------- submit ---------- */
+function submitQuote(){
+  calcTotals();
+  alert('Quote sent to property manager!');
+  window.location.href='contractor-feed.html';
+}
+
+/* init */
+calcTotals();
+</script>
+</body>
+</html>
