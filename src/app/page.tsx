@@ -228,7 +228,7 @@ export default function HomePage() {
       </section>
 
       {/* SECONDARY CTA */}
-      <section className="bg-white text-[#1F1F1F]">
+      <section id="waitlist" className="bg-white text-[#1F1F1F]">
         <div className="mx-auto max-w-4xl px-6 py-14 text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
             Be first to try Conexus
