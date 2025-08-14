@@ -20,8 +20,6 @@ export default function DemoPage() {
               Tap through each role’s screens in the live phone. Use the tabs to switch roles,
               swipe or use your arrow keys to step through.
             </p>
-
-            {/* internal navigation must use Link (not <a>) */}
             <Link
               href="/#waitlist"
               className="inline-block rounded-xl bg-[#EDDC0B] text-black font-bold px-5 py-3"
@@ -31,11 +29,11 @@ export default function DemoPage() {
           </div>
 
           <div>
-            <PhoneDemo phoneHeight={800} />
+            {/* No custom props so it matches the component’s type */}
+            <PhoneDemo />
           </div>
         </div>
       </div>
     </main>
   );
 }
-

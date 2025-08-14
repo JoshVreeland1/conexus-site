@@ -16,9 +16,9 @@ type ScreenProps = {
 type Screen = {
   id: string;
   label: string;
-  component?: (props: ScreenProps) => JSX.Element;
+  component?: (props: ScreenProps) => React.JSX.Element;
   src?: string;
-  iframeSrc?: string; // served from /public
+  iframeSrc?: string; // /public path
 };
 
 type RoleConfig = {
@@ -27,13 +27,17 @@ type RoleConfig = {
   screens: Screen[];
 };
 
-// Typed message for iframe -> parent navigation
-type ConexusNavMsg = {
+type BridgeMessage = {
   type: 'conexus-nav';
   to?: string;
 };
 
-// ---- Roles / screens ----
+function isBridgeMessage(v: unknown): v is BridgeMessage {
+  if (typeof v !== 'object' || v === null) return false;
+  const rec = v as Record<string, unknown>;
+  return rec.type === 'conexus-nav';
+}
+
 const ROLES: Record<RoleKey, RoleConfig> = {
   landlord: {
     displayName: 'Landlords',
@@ -69,7 +73,7 @@ const ROLES: Record<RoleKey, RoleConfig> = {
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
 export default function PhoneDemo({
-  initialRole = 'tenant',
+  initialRole = 'landlord',
 }: {
   initialRole?: RoleKey;
 }) {
@@ -80,38 +84,18 @@ export default function PhoneDemo({
   const total = roleCfg.screens.length;
   const cur = roleCfg.screens[index];
 
-  // navigation (memoized so effects don't warn)
-  const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
-  const prev = useCallback(() => setIndex((i) => (i - 1 + total) % total), [total]);
-  const goTo = useCallback(
-    (id: string) => {
-      const i = roleCfg.screens.findIndex((s) => s.id === id);
-      if (i >= 0) setIndex(i);
-    },
-    [roleCfg.screens]
-  );
+  const goTo = useCallback((id: string) => {
+    const i = roleCfg.screens.findIndex((s) => s.id === id);
+    if (i >= 0) setIndex(i);
+  }, [roleCfg.screens]);
 
-  // responsive sizing based on viewport height
-  const [dims, setDims] = useState(() => {
-    const h = 760;
-    const screenH = h * 0.86;
-    const phoneH = clamp(screenH, 640, 900);
-    const phoneW = Math.round(phoneH * (9 / 19.5));
-    return { phoneH, phoneW, screenH: phoneH - 28 };
-  });
+  const next = useCallback(() => {
+    setIndex((i) => (i + 1) % total);
+  }, [total]);
 
-  useEffect(() => {
-    const recalc = () => {
-      const vh = window.innerHeight || 800;
-      const phoneH = clamp(vh * 0.86, 640, 900);
-      const phoneW = Math.round(phoneH * (9 / 19.5));
-      const screenH = phoneH - 28;
-      setDims({ phoneH, phoneW, screenH });
-    };
-    recalc();
-    window.addEventListener('resize', recalc);
-    return () => window.removeEventListener('resize', recalc);
-  }, []);
+  const prev = useCallback(() => {
+    setIndex((i) => (i - 1 + total) % total);
+  }, [total]);
 
   // keyboard shortcuts
   useEffect(() => {
@@ -126,25 +110,22 @@ export default function PhoneDemo({
     return () => window.removeEventListener('keydown', onKey);
   }, [next, prev]);
 
-  // basic swipe
+  // swipe
   const startX = useRef<number | null>(null);
   const onPointerDown = (e: React.PointerEvent) => { startX.current = e.clientX; };
   const onPointerUp = (e: React.PointerEvent) => {
     if (startX.current == null) return;
     const dx = e.clientX - startX.current;
-    if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
+    if (Math.abs(dx) > 40) setIndex((i) => (dx < 0 ? (i + 1) % total : (i - 1 + total) % total));
     startX.current = null;
   };
 
-  // listen for postMessage from iframes (typed, no any)
+  // bridge from iframes
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const data = e.data as unknown;
-      if (typeof data === 'object' && data !== null && 'type' in (data as Record<string, unknown>)) {
-        const msg = data as Partial<ConexusNavMsg>;
-        if (msg.type === 'conexus-nav' && typeof msg.to === 'string') {
-          goTo(msg.to);
-        }
+      if (isBridgeMessage(data) && data.to) {
+        goTo(data.to);
       }
     };
     window.addEventListener('message', onMsg);
@@ -155,6 +136,7 @@ export default function PhoneDemo({
 
   return (
     <div className="w-full">
+      {/* Role switcher */}
       <div className="flex items-center gap-2 mb-4">
         {(['landlord', 'tenant', 'contractor'] as RoleKey[]).map((r) => {
           const active = r === role;
@@ -172,27 +154,26 @@ export default function PhoneDemo({
         })}
       </div>
 
-      <div className="relative mx-auto" style={{ width: dims.phoneW, height: dims.phoneH }}>
+      {/* Phone frame */}
+      <div className="relative mx-auto w-[320px] sm:w-[360px]">
         <div
           className="relative rounded-[42px] border border-black/10 bg-black/5 shadow-xl overflow-hidden"
-          style={{ padding: 14, width: '100%', height: '100%', background: '#0B0B0B' }}
+          style={{ padding: 14, background: '#0B0B0B' }}
         >
           <div className="absolute left-1/2 -translate-x-1/2 top-2 h-6 w-28 bg-black/80 rounded-b-2xl" />
-
           <div
             className="relative bg-black rounded-[30px] overflow-hidden"
-            style={{ width: '100%', height: dims.screenH }}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             role="region"
             aria-label={`${roleCfg.displayName} screen: ${cur.label}`}
           >
-            <div className="bg-white w-full h-full">
+            <div className="bg-white">
               {cur.iframeSrc ? (
                 <iframe
                   title={cur.label}
                   src={cur.iframeSrc}
-                  style={{ width: '100%', height: '100%', border: 0 }}
+                  style={{ width: '100%', height: 560, border: 0 }}
                   allow="clipboard-write; autoplay"
                 />
               ) : cur.src ? (
@@ -202,7 +183,7 @@ export default function PhoneDemo({
                   alt={cur.label}
                   width={1170}
                   height={2532}
-                  className="w-full h-full object-contain select-none pointer-events-none"
+                  className="w-full h-auto select-none pointer-events-none"
                 />
               ) : cur.component ? (
                 <cur.component role={role} goTo={goTo} next={next} prev={prev} />
@@ -214,12 +195,29 @@ export default function PhoneDemo({
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="mt-3 text-center text-xs text-gray-600 dark:text-gray-300">
-        {roleCfg.displayName} · {cur.label}
+        {/* Controls */}
+        <div className="mt-3 flex items-center justify-between">
+          <button onClick={prev} className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 transition text-sm">← Prev</button>
+          <div className="flex items-center gap-2">
+            {roleCfg.screens.map((s, i) => (
+              <button key={s.id} onClick={() => goToDot(i)} aria-label={`Go to ${s.label}`}>
+                <span
+                  className="block h-2 w-2 rounded-full transition"
+                  style={{ background: i === index ? roleCfg.color : 'rgba(0,0,0,0.25)', transform: i === index ? 'scale(1.25)' : 'scale(1)' }}
+                />
+              </button>
+            ))}
+          </div>
+          <button onClick={next} className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 transition text-sm">Next →</button>
+        </div>
+
+        <div className="mt-2 text-center text-xs text-gray-600 dark:text-gray-300">
+          {roleCfg.displayName} · {cur.label}
+        </div>
       </div>
     </div>
   );
 }
+
 
