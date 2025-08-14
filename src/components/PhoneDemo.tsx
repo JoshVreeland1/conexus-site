@@ -1,6 +1,7 @@
+// src/components/PhoneDemo.tsx
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 
 type RoleKey = 'landlord' | 'tenant' | 'contractor';
@@ -26,7 +27,13 @@ type RoleConfig = {
   screens: Screen[];
 };
 
-// ---- Your screens map ----
+// Typed message for iframe -> parent navigation
+type ConexusNavMsg = {
+  type: 'conexus-nav';
+  to?: string;
+};
+
+// ---- Roles / screens ----
 const ROLES: Record<RoleKey, RoleConfig> = {
   landlord: {
     displayName: 'Landlords',
@@ -63,10 +70,8 @@ const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(ma
 
 export default function PhoneDemo({
   initialRole = 'tenant',
-  phoneHeight = 980,    // <<— make this bigger/smaller to taste
 }: {
   initialRole?: RoleKey;
-  phoneHeight?: number;
 }) {
   const [role, setRole] = useState<RoleKey>(initialRole);
   const [index, setIndex] = useState(0);
@@ -75,22 +80,40 @@ export default function PhoneDemo({
   const total = roleCfg.screens.length;
   const cur = roleCfg.screens[index];
 
-  // nav helpers (also used by iframe postMessage bridge)
-  const goTo = (id: string) => {
-    const i = roleCfg.screens.findIndex((s) => s.id === id);
-    if (i >= 0) setIndex(i);
-  };
-  const next = () => setIndex((i) => (i + 1) % total);
-  const prev = () => setIndex((i) => (i - 1 + total) % total);
+  // navigation (memoized so effects don't warn)
+  const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + total) % total), [total]);
+  const goTo = useCallback(
+    (id: string) => {
+      const i = roleCfg.screens.findIndex((s) => s.id === id);
+      if (i >= 0) setIndex(i);
+    },
+    [roleCfg.screens]
+  );
 
-  // fixed desired phone height, independent of viewport (page can scroll)
-  // 19.5:9 ratio => width = height * (9 / 19.5)
-  const BEZEL = 14 * 2; // padding inside outer phone container
-  const phoneH = clamp(phoneHeight, 720, 1200);
-  const phoneW = Math.round(phoneH * (9 / 19.5));
-  const screenH = phoneH - BEZEL;
+  // responsive sizing based on viewport height
+  const [dims, setDims] = useState(() => {
+    const h = 760;
+    const screenH = h * 0.86;
+    const phoneH = clamp(screenH, 640, 900);
+    const phoneW = Math.round(phoneH * (9 / 19.5));
+    return { phoneH, phoneW, screenH: phoneH - 28 };
+  });
 
-  // keyboard shortcuts (interactive only)
+  useEffect(() => {
+    const recalc = () => {
+      const vh = window.innerHeight || 800;
+      const phoneH = clamp(vh * 0.86, 640, 900);
+      const phoneW = Math.round(phoneH * (9 / 19.5));
+      const screenH = phoneH - 28;
+      setDims({ phoneH, phoneW, screenH });
+    };
+    recalc();
+    window.addEventListener('resize', recalc);
+    return () => window.removeEventListener('resize', recalc);
+  }, []);
+
+  // keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') next();
@@ -101,35 +124,37 @@ export default function PhoneDemo({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [total]);
+  }, [next, prev]);
 
-  // swipe
+  // basic swipe
   const startX = useRef<number | null>(null);
   const onPointerDown = (e: React.PointerEvent) => { startX.current = e.clientX; };
   const onPointerUp = (e: React.PointerEvent) => {
     if (startX.current == null) return;
     const dx = e.clientX - startX.current;
-    if (Math.abs(dx) > 40) setIndex((i) => (dx < 0 ? (i + 1) % total : (i - 1 + total) % total));
+    if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
     startX.current = null;
   };
 
-  // iframe -> parent bridge
+  // listen for postMessage from iframes (typed, no any)
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const data = e.data as unknown;
-      if (typeof data === 'object' && data && (data as any).type === 'conexus-nav') {
-        const to = (data as any).to as string | undefined;
-        if (to) goTo(to);
+      if (typeof data === 'object' && data !== null && 'type' in (data as Record<string, unknown>)) {
+        const msg = data as Partial<ConexusNavMsg>;
+        if (msg.type === 'conexus-nav' && typeof msg.to === 'string') {
+          goTo(msg.to);
+        }
       }
     };
     window.addEventListener('message', onMsg);
     return () => window.removeEventListener('message', onMsg);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roleCfg]);
+  }, [goTo]);
+
+  const goToDot = (i: number) => setIndex(clamp(i, 0, total - 1));
 
   return (
     <div className="w-full">
-      {/* Role switcher */}
       <div className="flex items-center gap-2 mb-4">
         {(['landlord', 'tenant', 'contractor'] as RoleKey[]).map((r) => {
           const active = r === role;
@@ -147,19 +172,16 @@ export default function PhoneDemo({
         })}
       </div>
 
-      {/* Phone frame */}
-      <div className="relative mx-auto" style={{ width: phoneW, height: phoneH }}>
+      <div className="relative mx-auto" style={{ width: dims.phoneW, height: dims.phoneH }}>
         <div
           className="relative rounded-[42px] border border-black/10 bg-black/5 shadow-xl overflow-hidden"
           style={{ padding: 14, width: '100%', height: '100%', background: '#0B0B0B' }}
         >
-          {/* notch */}
           <div className="absolute left-1/2 -translate-x-1/2 top-2 h-6 w-28 bg-black/80 rounded-b-2xl" />
 
-          {/* screen */}
           <div
             className="relative bg-black rounded-[30px] overflow-hidden"
-            style={{ width: '100%', height: screenH }}
+            style={{ width: '100%', height: dims.screenH }}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             role="region"
@@ -187,7 +209,6 @@ export default function PhoneDemo({
               ) : null}
             </div>
 
-            {/* helper */}
             <div className="pointer-events-none absolute bottom-2 left-0 right-0 text-center text-[11px] text-white/70">
               Swipe ⟷ or use ←/→ · 1/2/3 to switch roles
             </div>
@@ -195,10 +216,10 @@ export default function PhoneDemo({
         </div>
       </div>
 
-      {/* caption */}
       <div className="mt-3 text-center text-xs text-gray-600 dark:text-gray-300">
         {roleCfg.displayName} · {cur.label}
       </div>
     </div>
   );
 }
+

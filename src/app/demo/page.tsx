@@ -7,7 +7,9 @@ export default function DemoPage() {
       <div className="max-w-6xl mx-auto px-4 py-16">
         <header className="flex items-center justify-between mb-10">
           <h1 className="text-3xl font-bold">Conexus Demo</h1>
-          <Link href="/" className="underline underline-offset-4">← Back</Link>
+          <Link href="/" className="underline underline-offset-4">
+            ← Back
+          </Link>
         </header>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -19,12 +21,12 @@ export default function DemoPage() {
               Tap through each role’s screens in the live phone. Use the tabs to switch roles,
               swipe or use your arrow keys to step through, and hit play to auto-advance.
             </p>
-            <a
+            <Link
               href="/#waitlist"
               className="inline-block rounded-xl bg-[#EDDC0B] text-black font-bold px-5 py-3"
             >
               Join the Waitlist
-            </a>
+            </Link>
           </div>
 
           <div>
