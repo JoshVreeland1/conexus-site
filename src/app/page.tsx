@@ -29,13 +29,10 @@ export default function HomePage() {
       }
       setStatus('success');
       setMessage("You're on the list! We'll be in touch.");
-      setEmail('');
-      setName('');
-      setRole('Landlord / PM');
+      setEmail(''); setName(''); setRole('Landlord / PM');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong.';
-      setStatus('error');
-      setMessage(msg);
+      setStatus('error'); setMessage(msg);
     }
   }
 
@@ -60,7 +57,7 @@ export default function HomePage() {
         >
           <div style={{ flex: 1, minWidth: 320 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-              <Image src="/logo.svg" alt="Conexus" width={40} height={40} />
+              <Image src="/logo.png" alt="Conexus" width={40} height={40} />
               <span style={{ fontSize: 14, opacity: 0.9 }}>Conexus</span>
             </div>
             <h1 style={{ fontSize: 44, lineHeight: 1.1, margin: '0 0 12px' }}>

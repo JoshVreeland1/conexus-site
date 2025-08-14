@@ -1,4 +1,3 @@
-// src/app/api/waitlist/route.ts
 import { NextResponse } from 'next/server';
 import { createClient, type PostgrestError } from '@supabase/supabase-js';
 
@@ -8,11 +7,7 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-type SignupPayload = {
-  email: string;
-  name?: string;
-  role?: string;
-};
+type SignupPayload = { email: string; name?: string; role?: string };
 
 export async function POST(request: Request) {
   try {
@@ -38,11 +33,8 @@ export async function POST(request: Request) {
 
     if (error) {
       const pgErr = error as PostgrestError;
-      const isDuplicate =
-        pgErr.code === '23505' || pgErr.message.toLowerCase().includes('duplicate');
-      if (isDuplicate) {
-        return NextResponse.json({ ok: true, note: 'Already joined' }, { status: 200 });
-      }
+      const isDuplicate = pgErr.code === '23505' || pgErr.message.toLowerCase().includes('duplicate');
+      if (isDuplicate) return NextResponse.json({ ok: true, note: 'Already joined' }, { status: 200 });
       return NextResponse.json({ error: pgErr.message }, { status: 500 });
     }
 
