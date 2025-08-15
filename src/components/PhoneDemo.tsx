@@ -1,3 +1,4 @@
+// src/components/PhoneDemo.tsx
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -5,26 +6,9 @@ import Image from 'next/image';
 
 export type RoleKey = 'landlord' | 'tenant' | 'contractor';
 
-type ScreenProps = {
-  role: RoleKey;
-  goTo: (id: string) => void;
-  next: () => void;
-  prev: () => void;
-};
-
-type Screen = {
-  id: string;
-  label: string;
-  component?: (props: ScreenProps) => React.JSX.Element;
-  src?: string;
-  iframeSrc?: string; // /public path
-};
-
-type RoleConfig = {
-  displayName: string;
-  color: string;
-  screens: Screen[];
-};
+type ScreenProps = { role: RoleKey; goTo: (id: string) => void; next: () => void; prev: () => void; };
+type Screen = { id: string; label: string; component?: (p: ScreenProps) => React.JSX.Element; src?: string; iframeSrc?: string; };
+type RoleConfig = { displayName: string; color: string; screens: Screen[] };
 
 type BridgeMessage = { type: 'conexus-nav'; to?: string };
 function isBridgeMessage(v: unknown): v is BridgeMessage {
@@ -76,7 +60,7 @@ const buildIframeSrc = (base?: string, role?: RoleKey, screenId?: string) => {
 
 export default function PhoneDemo({
   initialRole = 'landlord',
-  maxPhoneWidth = 420, // upper bound for very wide desktops
+  maxPhoneWidth = 420, // never exceed this
 }: {
   initialRole?: RoleKey;
   maxPhoneWidth?: number;
@@ -133,17 +117,16 @@ export default function PhoneDemo({
     return () => window.removeEventListener('message', onMsg);
   }, [goTo]);
 
-  // --- responsive phone sizing (iPhone-ish 19.5:9) ---
+  // --- phone sizing (iPhone-ish 19.5:9) ---
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const [deviceW, setDeviceW] = useState(360);
-
   useEffect(() => {
     if (!wrapRef.current) return;
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const cw = Math.floor(entry.contentRect.width);
-        // Give the phone some side padding on small screens
-        const ideal = Math.min(maxPhoneWidth, Math.max(300, cw));
+        const cw = Math.floor(entries[0].contentRect.width);
+        // Fit within container, clamp between 300px and maxPhoneWidth, and avoid 1px overflow
+        const ideal = Math.min(maxPhoneWidth, Math.max(300, cw - 1));
         setDeviceW(ideal);
       }
     });
@@ -152,37 +135,45 @@ export default function PhoneDemo({
   }, [maxPhoneWidth]);
 
   const deviceH = Math.round(deviceW * (19.5 / 9));
-  const bezel = 14;
+  const bezel = 14; // frame padding
   const screenH = deviceH - bezel * 2;
 
-  // persistent gold ring for active role (not focus-based)
-  const ringShadowActive = '0 0 0 2px #F0A202, 0 0 0 6px rgba(240,162,2,0.22)';
-
-  // reduced motion (avoid dot scaling if user prefers)
-  const prefersReduced = typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // persistent ring (gold)
+  const ringShadowActive = '0 0 0 2px #F0A202';
 
   const goToDot = (i: number) => setIndex(clamp(i, 0, total - 1));
 
   return (
-    <div ref={wrapRef} className="w-full">
-      {/* Role switcher centered to the phone width */}
-      <div className="mx-auto mb-4 flex items-center justify-center gap-2" style={{ width: deviceW }}>
+    <div ref={wrapRef} className="w-full" style={{ overflow: 'visible' }}>
+      {/* Role switcher (now a 3-col grid sized to phone width, so it cannot overflow) */}
+      <div
+        className="mx-auto mb-4 pt-2"
+        style={{
+          width: deviceW,
+          maxWidth: '100%',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 8,
+          overflow: 'visible', // let the glow show if needed (doesn't affect layout)
+        }}
+      >
         {(['landlord', 'tenant', 'contractor'] as RoleKey[]).map((r) => {
           const active = r === role;
           return (
             <button
               key={r}
               onClick={() => { setRole(r); setIndex(0); }}
-              className={`px-3 py-1.5 rounded-full text-sm font-semibold transition
-                ${active ? 'bg-[#14213D] text-white' : 'bg-gray-200/70 hover:bg-gray-300'}`}
+              className={`rounded-full text-sm font-semibold transition
+                ${active ? 'bg-[#14213D] text-white' : 'bg-white/40 text-white hover:bg-white/50'}`}
               aria-pressed={active}
               aria-label={ROLES[r].displayName}
               style={{
+                width: '100%',                // fill grid cell
+                padding: '10px 12px',         // compact so all 3 fit at small widths
                 boxShadow: active ? ringShadowActive : 'none', // persistent gold ring
-                outline: 'none',
-                minWidth: 116, // keep tap area comfy on iPhone
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {ROLES[r].displayName}
@@ -192,17 +183,18 @@ export default function PhoneDemo({
       </div>
 
       {/* Phone frame */}
-      <div className="relative mx-auto" style={{ width: deviceW }}>
+      <div className="relative mx-auto" style={{ width: '100%', maxWidth: deviceW }}>
         <div
           className="relative rounded-[42px] border border-black/10 bg-black/5 shadow-xl overflow-hidden"
           style={{ padding: bezel, background: '#0B0B0B', height: deviceH }}
         >
           {/* notch */}
           <div className="absolute left-1/2 -translate-x-1/2 top-2 h-6 w-28 bg-black/80 rounded-b-2xl" />
+
           {/* screen */}
           <div
             className="relative bg-black rounded-[30px] overflow-hidden"
-            style={{ height: screenH, touchAction: 'pan-x' }}
+            style={{ height: screenH }}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             role="region"
@@ -234,10 +226,10 @@ export default function PhoneDemo({
         </div>
 
         {/* Controls */}
-        <div className="mt-3 flex items-center justify-between" style={{ width: deviceW, marginInline: 'auto' }}>
+        <div className="mt-3 flex items-center justify-between" style={{ width: '100%' }}>
           <button
             onClick={prev}
-            className="px-3 py-1.5 rounded-md bg-[#14213D] text-white hover:bg-[#2f4982] transition text-sm"
+            className="px-3 py-1.5 rounded-md bg-[#14213D] text-white focus:ring-2 focus:ring-[#F0A202] hover:bg-[#2f4982] transition text-sm"
           >
             ← Prev
           </button>
@@ -249,7 +241,7 @@ export default function PhoneDemo({
                   className="block h-2 w-2 rounded-full transition"
                   style={{
                     background: i === index ? roleCfg.color : 'rgba(0,0,0,0.25)',
-                    transform: i === index && !prefersReduced ? 'scale(1.25)' : 'scale(1)',
+                    transform: i === index ? 'scale(1.25)' : 'scale(1)',
                   }}
                 />
               </button>
@@ -258,13 +250,13 @@ export default function PhoneDemo({
 
           <button
             onClick={next}
-            className="px-3 py-1.5 rounded-md bg-[#14213D] text-white hover:bg-[#2f4982] transition text-sm"
+            className="px-3 py-1.5 rounded-md bg-[#14213D] text-white focus:ring-2 focus:ring-[#F0A202] hover:bg-[#2f4982] transition text-sm"
           >
             Next →
           </button>
         </div>
 
-        <div className="mt-2 text-center text-xs text-gray-600">
+        <div className="mt-2 text-center text-xs text-gray-600 dark:text-gray-300" style={{ width: '100%' }}>
           {roleCfg.displayName} · {cur.label}
         </div>
       </div>

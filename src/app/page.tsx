@@ -76,7 +76,15 @@ export default function HomePage() {
             <div className="order-2 lg:order-1">
               <div className="flex items-center gap-3 mb-6">
                 {/* responsive logo: shrink on mobile to avoid layout shift */}
-                <Image src="/logo1.png" alt="Conexus" width={220} height={220} priority className="w-40 sm:w-56 h-auto" />
+                <Image
+                  src="/logo1.png"
+                  alt="Conexus"
+                  width={400}
+                  height={400}
+                  priority
+                  className="w-40 sm:w-56 h-auto"
+                  style={{ marginLeft: '10px' }} // Adjust this value as needed
+                />
               </div>
 
               <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-semibold leading-[1.05] tracking-tight mb-4">

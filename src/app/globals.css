@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Theme tokens (Tailwind v4 inline theme) */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -19,8 +20,43 @@
   }
 }
 
+/* Base */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;            /* Prevent horizontal scrolling */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  min-height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Media elements fit container */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+iframe {
+  max-width: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Safe viewport height for mobile (prevents iOS 100vh bug) */
+:root {
+  --svh: 100svh;
 }
