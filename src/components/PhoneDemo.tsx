@@ -1,4 +1,3 @@
-// src/components/PhoneDemo.tsx
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -66,6 +65,7 @@ const ROLES: Record<RoleKey, RoleConfig> = {
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
+/** Build a fresh iframe URL so role/screen changes always reload (and defeat caching). */
 const buildIframeSrc = (base?: string, role?: RoleKey, screenId?: string) => {
   if (!base) return undefined;
   const sep = base.includes('?') ? '&' : '?';
@@ -76,18 +76,20 @@ const buildIframeSrc = (base?: string, role?: RoleKey, screenId?: string) => {
 
 export default function PhoneDemo({
   initialRole = 'landlord',
-  phoneWidth = 360,
+  maxPhoneWidth = 420, // upper bound for very wide desktops
 }: {
   initialRole?: RoleKey;
-  phoneWidth?: number;
+  maxPhoneWidth?: number;
 }) {
   const [role, setRole] = useState<RoleKey>(initialRole);
   const roleCfg = useMemo(() => ROLES[role], [role]);
 
+  // screen index per role
   const [index, setIndex] = useState(0);
   const total = roleCfg.screens.length;
   const cur = roleCfg.screens[index];
 
+  // navigation helpers
   const goTo = useCallback(
     (id: string) => {
       const i = roleCfg.screens.findIndex((s) => s.id === id);
@@ -98,6 +100,7 @@ export default function PhoneDemo({
   const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
   const prev = useCallback(() => setIndex((i) => (i - 1 + total) % total), [total]);
 
+  // keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') next();
@@ -110,6 +113,7 @@ export default function PhoneDemo({
     return () => window.removeEventListener('keydown', onKey);
   }, [next, prev]);
 
+  // swipe
   const startX = useRef<number | null>(null);
   const onPointerDown = (e: React.PointerEvent) => { startX.current = e.clientX; };
   const onPointerUp = (e: React.PointerEvent) => {
@@ -119,6 +123,7 @@ export default function PhoneDemo({
     startX.current = null;
   };
 
+  // iframe -> React bridge
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const data = e.data as unknown;
@@ -128,19 +133,40 @@ export default function PhoneDemo({
     return () => window.removeEventListener('message', onMsg);
   }, [goTo]);
 
-  const goToDot = (i: number) => setIndex(clamp(i, 0, total - 1));
+  // --- responsive phone sizing (iPhone-ish 19.5:9) ---
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const [deviceW, setDeviceW] = useState(360);
 
-  // phone sizing (iPhone-ish 19.5:9)
-  const deviceW = phoneWidth;
+  useEffect(() => {
+    if (!wrapRef.current) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const cw = Math.floor(entry.contentRect.width);
+        // Give the phone some side padding on small screens
+        const ideal = Math.min(maxPhoneWidth, Math.max(300, cw));
+        setDeviceW(ideal);
+      }
+    });
+    ro.observe(wrapRef.current);
+    return () => ro.disconnect();
+  }, [maxPhoneWidth]);
+
   const deviceH = Math.round(deviceW * (19.5 / 9));
   const bezel = 14;
   const screenH = deviceH - bezel * 2;
 
-  // persistent gold ring for active role
-  const ringShadowActive = '0 0 0 2px #F0A202';
+  // persistent gold ring for active role (not focus-based)
+  const ringShadowActive = '0 0 0 2px #F0A202, 0 0 0 6px rgba(240,162,2,0.22)';
+
+  // reduced motion (avoid dot scaling if user prefers)
+  const prefersReduced = typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const goToDot = (i: number) => setIndex(clamp(i, 0, total - 1));
 
   return (
-    <div className="w-full">
+    <div ref={wrapRef} className="w-full">
       {/* Role switcher centered to the phone width */}
       <div className="mx-auto mb-4 flex items-center justify-center gap-2" style={{ width: deviceW }}>
         {(['landlord', 'tenant', 'contractor'] as RoleKey[]).map((r) => {
@@ -154,8 +180,9 @@ export default function PhoneDemo({
               aria-pressed={active}
               aria-label={ROLES[r].displayName}
               style={{
-                boxShadow: active ? ringShadowActive : 'none', // <-- persistent gold ring
+                boxShadow: active ? ringShadowActive : 'none', // persistent gold ring
                 outline: 'none',
+                minWidth: 116, // keep tap area comfy on iPhone
               }}
             >
               {ROLES[r].displayName}
@@ -175,7 +202,7 @@ export default function PhoneDemo({
           {/* screen */}
           <div
             className="relative bg-black rounded-[30px] overflow-hidden"
-            style={{ height: screenH }}
+            style={{ height: screenH, touchAction: 'pan-x' }}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             role="region"
@@ -184,9 +211,9 @@ export default function PhoneDemo({
             <div className="bg-white" style={{ width: '100%', height: '100%' }}>
               {cur.iframeSrc ? (
                 <iframe
-                  key={`${role}-${cur.id}`}
+                  key={`${role}-${cur.id}`} // force remount when role/screen changes
                   title={cur.label}
-                  src={buildIframeSrc(cur.iframeSrc, role, cur.id)}
+                  src={buildIframeSrc(cur.iframeSrc, role, cur.id)} // cache-busted URL
                   style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
                   allow="clipboard-write; autoplay"
                 />
@@ -222,7 +249,7 @@ export default function PhoneDemo({
                   className="block h-2 w-2 rounded-full transition"
                   style={{
                     background: i === index ? roleCfg.color : 'rgba(0,0,0,0.25)',
-                    transform: i === index ? 'scale(1.25)' : 'scale(1)',
+                    transform: i === index && !prefersReduced ? 'scale(1.25)' : 'scale(1)',
                   }}
                 />
               </button>
