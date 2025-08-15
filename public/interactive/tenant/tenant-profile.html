@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Profile – Conexus Tenant</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+body{background:#F9FAFB;color:#1F1F1F;}
+header{display:flex;align-items:center;justify-content:center;padding:18px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+header h1{font-size:18px;font-weight:600;color:#14213D;}
+.avatar{width:72px;height:72px;border-radius:50%;background:#C75C24;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;margin:20px auto 10px;}
+.sub{color:#6C7A89;font-size:13px;text-align:center;margin-bottom:20px;}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin:16px;}
+.row{display:flex;justify-content:space-between;margin:8px 0;}
+.row span:first-child{color:#6C7A89;font-size:13px;}
+button{cursor:pointer;border:none;border-radius:8px;padding:12px 20px;font-weight:600;font-size:14px;min-height:44px;}
+.btn-primary{background:#C75C24;color:#fff;}
+.btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0 calc(10px + env(safe-area-inset-bottom));box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;padding:6px 10px;}
+footer img{width:20px;height:20px;margin-bottom:4px;}
+.toggle{appearance:none;width:46px;height:28px;border-radius:28px;background:#D4D4D4;position:relative;outline:none;transition:.2s;}
+.toggle:checked{background:#C75C24;}
+.toggle:before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;}
+.toggle:checked:before{left:21px;}
+</style>
+</head>
+<body>
+
+<header><h1>Profile</h1></header>
+
+<div class="avatar">SK</div>
+<p style="text-align:center;font-weight:600;margin-bottom:4px;">Sarah K.</p>
+<p class="sub">Austin, TX • Member since 2024</p>
+
+<style>
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+    
+    .card h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #14213D;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #E5E5E5;
+      padding-bottom: 6px;
+    }
+    
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #F0F0F0;
+    }
+    
+    .row:last-child {
+      border-bottom: none;
+    }
+    
+    .row span:first-child {
+      font-size: 13px;
+      color: #6C7A89;
+    }
+    
+    .row span:last-child {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+    }
+    
+    .btn-outline {
+      background: #fff;
+      border: 2px solid #14213D;
+      color: #14213D;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    
+    .btn-outline:hover {
+      background: #F7F7F7;
+    }
+    </style>
+
+<!-- Address -->
+<div class="card">
+    <h2>Property Info</h2>
+    <div class="row"><span>Address</span><span>123 Lakeview Villas, Unit 12B</span></div>
+    <div class="row"><span>Property Manager</span><span>Lakeview PM Group</span></div>
+    <div class="row"><span>Building</span><span>Lakeview Villas</span></div>
+  </div>
+  
+  <!-- Account -->
+  <div class="card">
+    <h2>Account</h2>
+    <div class="row"><span>Email</span><span>sarah.k@example.com</span></div>
+    <div class="row"><span>Phone</span><span>(512) 555-0102</span></div>
+    <button class="btn-outline" style="width:100%;margin-top:12px;" onclick="alert('Edit coming soon')">Edit Contact Info</button>
+  </div>
+
+<!-- Notifications -->
+<div class="card">
+  <h2 style="font-size:14px;font-weight:600;margin-bottom:10px;">Notifications</h2>
+  <div class="row"><span>Job Updates</span><input type="checkbox" class="toggle" checked></div>
+  <div class="row"><span>Quotes & Approvals</span><input type="checkbox" class="toggle" checked></div>
+  <div class="row"><span>Messages</span><input type="checkbox" class="toggle" checked></div>
+</div>
+
+<!-- Quick actions -->
+<div class="card">
+  <button class="btn-primary" style="width:100%;" onclick="location.href='tenant-messages.html'">Message Landlord</button>
+  <button class="btn-outline" style="width:100%;margin-top:10px;" onclick="location.href='tenant-history.html'">View History</button>
+</div>
+
+<footer>
+  <a href="tenant-home.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png">Home</a>
+  <a href="tenant-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png">Messages</a>
+  <a href="tenant-history.html"><img src="https://img.icons8.com/ios-filled/50/14213D/time-machine.png">History</a>
+  <a href="tenant-profile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/user.png">Profile</a>
+</footer>
+
+</body>
+</html>

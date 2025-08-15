@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>Profile – Conexus Landlord</title>
+  <style>
+    /* ===== SHARED INLINE STYLES ===== */
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+    html,body{height:100%;}
+    body{background:#F9FAFB;color:#1F1F1F;min-height:100svh;}
+
+    a{text-decoration:none;color:#C75C24;}
+    button{cursor:pointer;border:none;border-radius:8px;padding:12px 16px;font-weight:600;font-size:14px;}
+    .btn-primary{background:#C75C24;color:#fff;}
+    .btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+    .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin:16px 20px;}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:18px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    header h1{font-size:18px;font-weight:600;color:#14213D;}
+
+    /* Identity */
+    .avatar{width:84px;height:84px;border-radius:50%;background:#C75C24;color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;margin:20px auto 10px;}
+    .subtle{font-size:13px;color:#6C7A89;}
+    .center{text-align:center;}
+
+    /* Rows / pills */
+    .row{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+    .pill{padding:4px 10px;border-radius:12px;font-size:12px;color:#fff;white-space:nowrap;}
+    .pill-verified{background:#2BA84A;}
+    .pill-unverified{background:#F0A202;}
+
+    /* Footer nav */
+    :root{
+      --footer-h: 64px; /* visual height excluding safe area */
+    }
+    footer{
+      position:fixed;left:0;right:0;bottom:0;background:#fff;
+      display:flex;justify-content:space-around;
+      padding:10px 0 calc(10px + env(safe-area-inset-bottom));
+      box-shadow:0 -2px 6px rgba(0,0,0,.05);
+      min-height:var(--footer-h);
+    }
+    footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;}
+    footer img{width:20px;height:20px;margin-bottom:4px;}
+    .nav-active{color:#C75C24 !important;}
+
+    /* Layout helpers (iPhone 14 friendly) */
+    main{
+      /* pad bottom so last card clears fixed footer (footer height + some breathing room + safe area) */
+      padding:8px 0 calc(var(--footer-h) + 56px + env(safe-area-inset-bottom));
+      max-width:460px;margin:0 auto;
+    }
+    .section-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+    .full{width:100%;}
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Profile</h1>
+  </header>
+
+  <!-- Identity -->
+  <div class="avatar" id="avatarInitials">LV</div>
+  <p class="center" style="font-weight:600;margin-bottom:6px;">Lakeview Villas</p>
+  <p class="center subtle" style="margin-bottom:2px;">Austin, TX • Member since 2024</p>
+  <p class="center subtle" style="margin-bottom:14px;">Account Owner: Sarah Kim</p>
+
+  <main>
+    <!-- Account Overview -->
+    <section class="card">
+      <div class="row" style="margin-bottom:8px;">
+        <span class="subtle">Account Status</span>
+        <span class="pill pill-verified" id="statusPill">Verified</span>
+      </div>
+      <div class="row subtle" style="margin-top:4px;">
+        <span>Properties</span><strong id="propCount" style="font-size:13px;">12</strong>
+      </div>
+      <div class="row subtle" style="margin-top:6px;">
+        <span>Total Units</span><strong id="unitCount" style="font-size:13px;">428</strong>
+      </div>
+      <div class="section-actions">
+        <button class="btn-outline" onclick="location.href='pm-dashboard-mobile.html'">View Dashboard</button>
+        <button class="btn-primary" onclick="location.href='pm-analytics.html'">Analytics</button>
+      </div>
+      <button class="btn-outline full" style="margin-top:10px;" onclick="alert('Edit profile coming soon')">Edit Profile</button>
+    </section>
+
+    <!-- Billing & Plan -->
+    <section class="card">
+      <h2 style="font-size:14px;font-weight:600;margin-bottom:12px;">Billing & Plan</h2>
+      <div class="row" style="margin-bottom:8px;">
+        <span class="subtle">Current Plan</span><strong style="font-size:13px;">Free</strong>
+      </div>
+      <div class="row" style="margin-bottom:8px;">
+        <span class="subtle">Payment Method</span><span class="subtle">•••• 4242 – Visa</span>
+      </div>
+      <div class="section-actions">
+        <button class="btn-outline" onclick="alert('Manage plan coming soon')">Manage Plan</button>
+        <button class="btn-primary" onclick="alert('Update payment coming soon')">Update Payment</button>
+      </div>
+    </section>
+
+    <!-- Notifications & Preferences -->
+    <section class="card">
+      <h2 style="font-size:14px;font-weight:600;margin-bottom:12px;">Notifications & Preferences</h2>
+
+      <div class="row" style="margin-bottom:10px;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">Job Updates</div>
+          <div class="subtle">Email when tenants submit or contractors quote</div>
+        </div>
+        <button class="btn-outline" style="min-width:120px;" data-toggle="notif-job" onclick="toggleSetting('notif-job')">On</button>
+      </div>
+
+      <div class="row" style="margin-bottom:10px;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">SMS Alerts</div>
+          <div class="subtle">Text me for emergencies only</div>
+        </div>
+        <button class="btn-outline" style="min-width:120px;" data-toggle="notif-sms" onclick="toggleSetting('notif-sms')">Off</button>
+      </div>
+
+      <div class="row" style="margin-bottom:10px;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">Auto‑approve small jobs</div>
+          <div class="subtle">Auto‑approve quotes under <span id="autoAmt">$200</span></div>
+        </div>
+        <button class="btn-outline" style="min-width:120px;" data-toggle="auto-approve" onclick="toggleSetting('auto-approve')">Off</button>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn-outline" onclick="adjustAutoApprove()">Set Auto‑approve Limit</button>
+        <button class="btn-primary" onclick="alert('Preferences saved')">Save Changes</button>
+      </div>
+    </section>
+
+    <!-- Organization -->
+    <section class="card">
+      <h2 style="font-size:14px;font-weight:600;margin-bottom:12px;">Organization</h2>
+      <div class="row" style="margin-bottom:8px;">
+        <span class="subtle">Company</span><strong style="font-size:13px;">Lakeview Property Group</strong>
+      </div>
+      <div class="row" style="margin-bottom:8px;">
+        <span class="subtle">Email</span><strong style="font-size:13px;">owner@lakeviewvillas.com</strong>
+      </div>
+      <div class="row" style="margin-bottom:8px;">
+        <span class="subtle">Phone</span><strong style="font-size:13px;">(512) 555‑0134</strong>
+      </div>
+      <button class="btn-outline full" style="margin-top:10px;">Manage Team Members</button>
+    </section>
+  </main>
+
+  <footer>
+    <a href="pm-dashboard-mobile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png" alt="Dashboard">Dashboard</a>
+    <a href="pm-analytics.html"><img src="https://img.icons8.com/ios-filled/50/14213D/combo-chart.png" alt="Analytics">Analytics</a>
+    <a href="pm-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png" alt="Messages">Messages</a>
+    <a href="pm-profile.html" class="nav-active"><img src="https://img.icons8.com/ios-filled/50/14213D/user.png" alt="Profile">Profile</a>
+  </footer>
+
+  <script>
+    (function initInitials(){
+      const name='Lakeview Villas';
+      const initials=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      document.getElementById('avatarInitials').textContent=initials;
+    })();
+
+    function toggleSetting(key){
+      const btn=document.querySelector(`[data-toggle="${key}"]`);
+      const isOn=btn.textContent.trim()==='On';
+      btn.textContent=isOn?'Off':'On';
+    }
+
+    function adjustAutoApprove(){
+      const current=parseInt(String(document.getElementById('autoAmt').textContent).replace(/[$,]/g,''),10)||200;
+      const next=prompt('Set auto-approve limit (USD):', current);
+      if(next===null) return;
+      const clean=Math.max(0, Math.min(5000, parseInt(String(next).replace(/[^0-9]/g,''),10)||0));
+      document.getElementById('autoAmt').textContent=`$${clean.toLocaleString()}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!-- tenant-new.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>New Work Order – Conexus</title>
+
+<!-- ===== SHARED INLINE STYLES ===== -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+body{background:#F9FAFB;color:#1F1F1F;}
+a{text-decoration:none;color:#C75C24;}
+/* Buttons */
+button{cursor:pointer;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:14px;}
+.btn-primary{background:#C75C24;color:#fff;}
+.btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+.btn-accept{background:#2BA84A;color:#fff;}
+.btn-details{background:#C75C24;color:#fff;padding:6px 14px;font-size:12px;border-radius:6px;}
+.btn-complete{background:#14213D;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;}
+/* Card + layout */
+.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 4px 12px rgba(0,0,0,.05);}
+.mt-24{margin-top:24px;}
+/* Header */
+header{display:flex;align-items:center;padding:18px 24px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+header img{width:22px;height:22px;margin-right:12px;cursor:pointer;}
+header h1{font-size:18px;font-weight:600;color:#14213D;}
+/* Form */
+label{font-size:13px;font-weight:600;margin-bottom:6px;display:block;}
+input[type=text],select,textarea{width:100%;padding:12px;border:1px solid #D4D4D4;border-radius:8px;font-size:14px;margin-bottom:16px;background:#fff;}
+textarea{min-height:90px;resize:vertical;}
+.upload-box{display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed #C75C24;border-radius:12px;padding:24px;color:#C75C24;cursor:pointer;text-align:center;}
+#preview{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
+#preview img{width:70px;height:70px;border-radius:8px;object-fit:cover;}
+/* Sticky footer (submit) */
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 24px;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+</style>
+</head>
+<body>
+
+<!-- Back / title -->
+<header>
+  <img src="https://img.icons8.com/ios-filled/50/14213D/left.png" alt="Back" onclick="history.back()">
+  <h1>New Work Order</h1>
+</header>
+
+<main style="padding:24px 24px 100px;"> <!-- bottom padding leaves room for sticky footer -->
+  <form id="workForm">
+    <div class="card">
+      <!-- Category -->
+      <label for="category">Issue Category</label>
+      <select id="category" required>
+        <option value="">Select…</option>
+        <option>Plumbing</option>
+        <option>Electrical</option>
+        <option>HVAC</option>
+        <option>Pest Control</option>
+        <option>General Maintenance</option>
+        <option>Other</option>
+      </select>
+
+      <!-- Short title -->
+      <label for="title">Short Description</label>
+      <input type="text" id="title" placeholder="e.g., Leaking kitchen pipe" required>
+
+      <!-- Details -->
+      <label for="details">Details (optional)</label>
+      <textarea id="details" placeholder="Add any extra information your landlord or contractor should know…"></textarea>
+
+      <!-- Photo upload -->
+      <label for="photo">Photos (optional)</label>
+      <input type="file" id="photo" accept="image/*" multiple style="display:none">
+      <div class="upload-box" onclick="document.getElementById('photo').click();">
+        <img src="https://img.icons8.com/ios-filled/50/C75C24/camera.png" alt="" style="width:28px;height:28px;">
+        <span style="margin-top:6px;font-size:13px;">Tap to add photos</span>
+      </div>
+      <div id="preview"></div>
+    </div>
+  </form>
+</main>
+
+<!-- Sticky submit -->
+<footer>
+  <button class="btn-primary" style="width:100%;" onclick="submitForm()">Submit Work Order</button>
+</footer>
+
+<script>
+/* Image preview */
+const fileInput=document.getElementById('photo');
+fileInput.addEventListener('change',()=>{
+  const preview=document.getElementById('preview');
+  preview.innerHTML='';
+  [...fileInput.files].forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(f);
+  });
+});
+
+/* Simple submit stub */
+function submitForm(){
+  // TODO: real form handling / backend
+  window.location.href='tenant-home.html';   // next step: review page
+}
+</script>
+
+</body>
+</html>

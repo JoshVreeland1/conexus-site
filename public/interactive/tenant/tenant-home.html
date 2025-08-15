@@ -1,61 +1,39 @@
-<!-- tenant-home.html -->
+<!-- tenant-home.html (only the button link changed) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Tenant Home – Conexus</title>
-
-<!-- ===== SHARED INLINE STYLES ===== -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
 body{background:#F9FAFB;color:#1F1F1F;}
 a{text-decoration:none;color:#C75C24;}
-/* Buttons */
-button{cursor:pointer;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:14px;}
+button{cursor:pointer;border:none;border-radius:8px;padding:12px 20px;font-weight:600;font-size:14px;min-height:44px;}
 .btn-primary{background:#C75C24;color:#fff;}
 .btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
-.btn-accept{background:#2BA84A;color:#fff;}
-.btn-details{background:#C75C24;color:#fff;padding:6px 14px;font-size:12px;border-radius:6px;}
-.btn-complete{background:#14213D;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;}
-/* Filter pill */
-.filter-btn{padding:6px 14px;border-radius:20px;font-size:12px;margin-right:8px;border:1px solid #C75C24;background:#fff;color:#C75C24;cursor:pointer;}
-.filter-btn.active{background:#C75C24;color:#fff;}
-/* Card + layout */
+.btn-details{background:#C75C24;color:#fff;padding:8px 14px;font-size:12px;border-radius:6px;min-height:40px;}
 .card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 4px 12px rgba(0,0,0,.05);}
-.flex{display:flex;gap:24px;flex-wrap:wrap;}
 .mt-32{margin-top:32px;}
-/* Pills */
 .pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;}
-.pill-open{background:#F0A202;}
-.pill-wait{background:#F0A202;}
 .pill-prog{background:#2BA84A;}
-.pill-done{background:#14213D;}
-/* Mobile-specific tweaks */
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
-.logo{display:flex;align-items:center;font-size:20px;font-weight:700;color:#14213D;}
-.logo span{margin-left:8px;}
-main{padding:24px;}
+header{display:flex;align-items:center;justify-content:center;padding:10px 0;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+.logo img{width:103px;height:60px;}
+main{padding:24px;padding-bottom:120px;}
 .action-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-.action-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:14px;cursor:pointer;text-align:center;font-size:12px;font-weight:600;color:#14213D;}
+.action-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:14px;cursor:pointer;text-align:center;font-size:12px;font-weight:600;color:#14213D;min-height:92px;}
 .action-btn img{width:24px;height:24px;margin-bottom:6px;}
 .status-card h3{font-size:16px;font-weight:600;margin-bottom:12px;}
 .status-row{display:flex;align-items:center;justify-content:space-between;margin:6px 0;}
-.status-row span:first-child{font-weight:500;}
-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
-footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0 calc(10px + env(safe-area-inset-bottom));box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;padding:6px 10px;}
 footer img{width:20px;height:20px;margin-bottom:4px;}
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <header>
-  <div class="logo">
-    <img src="../Conexus_Logo2.png" alt="Conexus" style="width:50px;height:50px;">
-    <span>Conexus</span>
-  </div>
-  <button class="btn-outline" style="padding:6px 14px;font-size:12px;">Profile</button>
+  <div class="logo"><img src="/logo3.png" alt="Conexus"></div>
 </header>
 
 <main>
@@ -65,11 +43,11 @@ footer img{width:20px;height:20px;margin-bottom:4px;}
       <img src="https://img.icons8.com/ios-filled/50/14213D/plus-math.png" alt="">
       Submit<br>Work Order
     </div>
-    <div class="action-btn" onclick="alert('Opening chat…')">
+    <div class="action-btn" onclick="location.href='tenant-messages.html'">
       <img src="https://img.icons8.com/ios-filled/50/14213D/topic.png" alt="">
       Message<br>Landlord
     </div>
-    <div class="action-btn" onclick="location.href='tenant-review.html'">
+    <div class="action-btn" onclick="location.href='tenant-history.html'">
       <img src="https://img.icons8.com/ios-filled/50/14213D/folder-invoices.png" alt="">
       View<br>History
     </div>
@@ -91,12 +69,18 @@ footer img{width:20px;height:20px;margin-bottom:4px;}
       <span>Bright Plumbing Co.</span>
     </div>
     <div class="status-row" style="margin-top:14px;">
-      <button class="btn-details" onclick="location.href='tenant-review.html'">View Details</button>
+      <!-- UPDATED: goes straight to this job's details page -->
+      <button class="btn-details" onclick="location.href='tenant-job-3060.html'">View Details</button>
     </div>
   </div>
 </main>
 
-<!-- Bottom nav -->
 <footer>
-  <a href="tenant-home.html">
-    <img
+  <a href="tenant-home.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png">Home</a>
+  <a href="tenant-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png">Messages</a>
+  <a href="tenant-history.html"><img src="https://img.icons8.com/ios-filled/50/14213D/time-machine.png">History</a>
+  <a href="tenant-profile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/user.png">Profile</a>
+</footer>
+
+</body>
+</html>

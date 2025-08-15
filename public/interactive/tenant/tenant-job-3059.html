@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>#3059 • AC Not Cooling – Tenant</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+body{background:#F9FAFB;color:#1F1F1F;}
+header{display:flex;align-items:center;padding:18px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+header img{width:22px;height:22px;margin-right:12px;cursor:pointer;}
+header h1{font-size:18px;font-weight:600;color:#14213D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin:16px;}
+.row{display:flex;justify-content:space-between;margin:6px 0;}
+.row span:first-child{color:#6C7A89;font-size:13px;}
+.pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;white-space:nowrap;}
+.pill-wait{background:#F0A202;}
+.btn{cursor:pointer;border:none;border-radius:8px;padding:10px 16px;font-weight:600;font-size:14px;}
+.btn-outline{background:#fff;border:2px solid #14213D;color:#14213D;}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://img.icons8.com/ios-filled/50/14213D/left.png" onclick="history.back()">
+  <h1>#3059 • AC Not Cooling</h1>
+</header>
+
+<main style="padding-bottom:120px;">
+  <!-- Status / summary -->
+  <section class="card">
+    <div class="row" style="align-items:center;">
+      <span>Status</span><span class="pill pill-wait">Await Quote</span>
+    </div>
+    <div class="row"><span>Issue</span><span>AC blowing lukewarm air</span></div>
+    <div class="row"><span>Property</span><span>456 Summit Ridge • Unit 8A</span></div>
+    <div class="row"><span>Technician</span><span>—</span></div>
+    <div class="row"><span>Submitted</span><span>Aug 13, 2025 • 4:22 PM</span></div>
+
+    <h2 style="font-size:14px;font-weight:600;margin-top:12px;">Notes</h2>
+    <p style="font-size:13px;line-height:1.45;margin-top:6px;">
+      System running but not cooling. Thermostat set to 72°F, reads 79°F. Filter replaced ~3 weeks ago.
+    </p>
+
+    <img src="/broken_ac.jpg" alt="Issue photo" style="width:100%;border-radius:8px;margin-top:12px;">
+  </section>
+
+  <!-- Timeline -->
+  <section class="card">
+    <h2 style="font-size:14px;font-weight:600;margin-bottom:8px;">Timeline</h2>
+    <ul style="list-style:none;font-size:13px;line-height:1.6;">
+      <li><strong>Pending</strong> – Contractor quote</li>
+      <li><strong>Yesterday 4:22 PM</strong> – You submitted request</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <button class="btn btn-outline" style="width:100%;" onclick="location.href='tenant-messages.html'">Message Property Manager</button>
+</footer>
+
+</body>
+</html>

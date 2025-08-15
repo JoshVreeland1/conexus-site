@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>History – Conexus Tenant</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
+body{background:#F9FAFB;color:#1F1F1F;}
+header{display:flex;align-items:center;justify-content:center;padding:18px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+header h1{font-size:18px;font-weight:600;color:#14213D;}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin:16px;}
+.row-top{display:flex;justify-content:space-between;align-items:center;}
+.sub{font-size:13px;color:#6C7A89;margin-top:6px;}
+.pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;}
+.pill-done{background:#14213D;}
+.pill-prog{background:#2BA84A;}
+.pill-open{background:#F0A202;}
+.btn-details{background:#C75C24;color:#fff;padding:8px 14px;font-size:12px;border:none;border-radius:6px;margin-top:12px;cursor:pointer;min-height:40px;font-weight:600;}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0 calc(10px + env(safe-area-inset-bottom));box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;}
+footer img{width:20px;height:20px;margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<header><h1>History</h1></header>
+
+<main style="padding-bottom:120px;">
+
+  <!-- Pipe Burst -->
+  <div class="card">
+    <div class="row-top">
+      <div style="font-weight:600;">#3060 • Pipe Burst</div>
+      <span class="pill pill-prog">In Progress</span>
+    </div>
+    <div class="sub">Unit 12B • 123 Lakeview Villas</div>
+    <div class="sub">Scheduled today • Bright Plumbing Co.</div>
+    <button class="btn-details" onclick="location.href='tenant-job-3060.html'">View Details</button>
+  </div>
+
+  <!-- AC Not Cooling -->
+  <div class="card">
+    <div class="row-top">
+      <div style="font-weight:600;">#3059 • AC Not Cooling</div>
+      <span class="pill pill-open">Open</span>
+    </div>
+    <div class="sub">Unit 8A • 456 Summit Ridge</div>
+    <div class="sub">Submitted Aug 13, 2025</div>
+    <button class="btn-details" onclick="location.href='tenant-job-3059.html'">View Details</button>
+  </div>
+</main>
+
+<footer>
+  <a href="tenant-home.html"><img src="https://img.icons8.com/ios-filled/50/14213D/home.png">Home</a>
+  <a href="tenant-messages.html"><img src="https://img.icons8.com/ios-filled/50/14213D/speech-bubble.png">Messages</a>
+  <a href="tenant-history.html"><img src="https://img.icons8.com/ios-filled/50/14213D/time-machine.png">History</a>
+  <a href="tenant-profile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/user.png">Profile</a>
+</footer>
+
+</body>
+</html>

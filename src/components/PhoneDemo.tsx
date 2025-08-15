@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 
-type RoleKey = 'landlord' | 'tenant' | 'contractor';
+export type RoleKey = 'landlord' | 'tenant' | 'contractor';
 
 type ScreenProps = {
   role: RoleKey;
@@ -27,21 +27,15 @@ type RoleConfig = {
   screens: Screen[];
 };
 
-type BridgeMessage = {
-  type: 'conexus-nav';
-  to?: string;
-};
-
+type BridgeMessage = { type: 'conexus-nav'; to?: string };
 function isBridgeMessage(v: unknown): v is BridgeMessage {
-  if (typeof v !== 'object' || v === null) return false;
-  const rec = v as Record<string, unknown>;
-  return rec.type === 'conexus-nav';
+  return typeof v === 'object' && v !== null && (v as Record<string, unknown>).type === 'conexus-nav';
 }
 
 const ROLES: Record<RoleKey, RoleConfig> = {
   landlord: {
     displayName: 'Landlords',
-    color: '#EDDC0B',
+    color: '#F0A202',
     screens: [
       { id: 'l-01', label: 'PM Dashboard', iframeSrc: '/interactive/landlord/pm-dashboard-mobile.html' },
       { id: 'l-02', label: 'Work Order',   iframeSrc: '/interactive/landlord/pm-job.html' },
@@ -51,15 +45,15 @@ const ROLES: Record<RoleKey, RoleConfig> = {
   },
   tenant: {
     displayName: 'Tenants',
-    color: '#4ADE80',
+    color: '#F0A202',
     screens: [
       { id: 't-01', label: 'Home',        iframeSrc: '/interactive/tenant/tenant-home.html' },
-      { id: 't-02', label: 'New Request', iframeSrc: '/interactive/tenant/tenant-form.html' },
+      { id: 't-02', label: 'New Request', iframeSrc: '/interactive/tenant/tenant-new.html' },
     ],
   },
   contractor: {
     displayName: 'Contractors',
-    color: '#60A5FA',
+    color: '#F0A202',
     screens: [
       { id: 'c-01', label: 'Feed',      iframeSrc: '/interactive/contractor/contractor-feed.html' },
       { id: 'c-02', label: 'Profile',   iframeSrc: '/interactive/contractor/contractor-profile.html' },
@@ -72,32 +66,38 @@ const ROLES: Record<RoleKey, RoleConfig> = {
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
+const buildIframeSrc = (base?: string, role?: RoleKey, screenId?: string) => {
+  if (!base) return undefined;
+  const sep = base.includes('?') ? '&' : '?';
+  return `${base}${sep}role=${encodeURIComponent(role ?? '')}&screen=${encodeURIComponent(
+    screenId ?? ''
+  )}&t=${Date.now()}`;
+};
+
 export default function PhoneDemo({
   initialRole = 'landlord',
+  phoneWidth = 360,
 }: {
   initialRole?: RoleKey;
+  phoneWidth?: number;
 }) {
   const [role, setRole] = useState<RoleKey>(initialRole);
-  const [index, setIndex] = useState(0);
-
   const roleCfg = useMemo(() => ROLES[role], [role]);
+
+  const [index, setIndex] = useState(0);
   const total = roleCfg.screens.length;
   const cur = roleCfg.screens[index];
 
-  const goTo = useCallback((id: string) => {
-    const i = roleCfg.screens.findIndex((s) => s.id === id);
-    if (i >= 0) setIndex(i);
-  }, [roleCfg.screens]);
+  const goTo = useCallback(
+    (id: string) => {
+      const i = roleCfg.screens.findIndex((s) => s.id === id);
+      if (i >= 0) setIndex(i);
+    },
+    [roleCfg.screens]
+  );
+  const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + total) % total), [total]);
 
-  const next = useCallback(() => {
-    setIndex((i) => (i + 1) % total);
-  }, [total]);
-
-  const prev = useCallback(() => {
-    setIndex((i) => (i - 1 + total) % total);
-  }, [total]);
-
-  // keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') next();
@@ -110,7 +110,6 @@ export default function PhoneDemo({
     return () => window.removeEventListener('keydown', onKey);
   }, [next, prev]);
 
-  // swipe
   const startX = useRef<number | null>(null);
   const onPointerDown = (e: React.PointerEvent) => { startX.current = e.clientX; };
   const onPointerUp = (e: React.PointerEvent) => {
@@ -120,13 +119,10 @@ export default function PhoneDemo({
     startX.current = null;
   };
 
-  // bridge from iframes
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const data = e.data as unknown;
-      if (isBridgeMessage(data) && data.to) {
-        goTo(data.to);
-      }
+      if (isBridgeMessage(data) && data.to) goTo(data.to);
     };
     window.addEventListener('message', onMsg);
     return () => window.removeEventListener('message', onMsg);
@@ -134,10 +130,19 @@ export default function PhoneDemo({
 
   const goToDot = (i: number) => setIndex(clamp(i, 0, total - 1));
 
+  // phone sizing (iPhone-ish 19.5:9)
+  const deviceW = phoneWidth;
+  const deviceH = Math.round(deviceW * (19.5 / 9));
+  const bezel = 14;
+  const screenH = deviceH - bezel * 2;
+
+  // persistent gold ring for active role
+  const ringShadowActive = '0 0 0 2px #F0A202';
+
   return (
     <div className="w-full">
-      {/* Role switcher */}
-      <div className="flex items-center gap-2 mb-4">
+      {/* Role switcher centered to the phone width */}
+      <div className="mx-auto mb-4 flex items-center justify-center gap-2" style={{ width: deviceW }}>
         {(['landlord', 'tenant', 'contractor'] as RoleKey[]).map((r) => {
           const active = r === role;
           return (
@@ -145,8 +150,13 @@ export default function PhoneDemo({
               key={r}
               onClick={() => { setRole(r); setIndex(0); }}
               className={`px-3 py-1.5 rounded-full text-sm font-semibold transition
-                ${active ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-200/70 hover:bg-gray-300'}`}
+                ${active ? 'bg-[#14213D] text-white' : 'bg-gray-200/70 hover:bg-gray-300'}`}
               aria-pressed={active}
+              aria-label={ROLES[r].displayName}
+              style={{
+                boxShadow: active ? ringShadowActive : 'none', // <-- persistent gold ring
+                outline: 'none',
+              }}
             >
               {ROLES[r].displayName}
             </button>
@@ -155,25 +165,29 @@ export default function PhoneDemo({
       </div>
 
       {/* Phone frame */}
-      <div className="relative mx-auto w-[320px] sm:w-[360px]">
+      <div className="relative mx-auto" style={{ width: deviceW }}>
         <div
           className="relative rounded-[42px] border border-black/10 bg-black/5 shadow-xl overflow-hidden"
-          style={{ padding: 14, background: '#0B0B0B' }}
+          style={{ padding: bezel, background: '#0B0B0B', height: deviceH }}
         >
+          {/* notch */}
           <div className="absolute left-1/2 -translate-x-1/2 top-2 h-6 w-28 bg-black/80 rounded-b-2xl" />
+          {/* screen */}
           <div
             className="relative bg-black rounded-[30px] overflow-hidden"
+            style={{ height: screenH }}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             role="region"
             aria-label={`${roleCfg.displayName} screen: ${cur.label}`}
           >
-            <div className="bg-white">
+            <div className="bg-white" style={{ width: '100%', height: '100%' }}>
               {cur.iframeSrc ? (
                 <iframe
+                  key={`${role}-${cur.id}`}
                   title={cur.label}
-                  src={cur.iframeSrc}
-                  style={{ width: '100%', height: 560, border: 0 }}
+                  src={buildIframeSrc(cur.iframeSrc, role, cur.id)}
+                  style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
                   allow="clipboard-write; autoplay"
                 />
               ) : cur.src ? (
@@ -183,41 +197,50 @@ export default function PhoneDemo({
                   alt={cur.label}
                   width={1170}
                   height={2532}
-                  className="w-full h-auto select-none pointer-events-none"
+                  className="w-full h-full object-contain select-none pointer-events-none"
                 />
               ) : cur.component ? (
                 <cur.component role={role} goTo={goTo} next={next} prev={prev} />
               ) : null}
             </div>
-
-            <div className="pointer-events-none absolute bottom-2 left-0 right-0 text-center text-[11px] text-white/70">
-              Swipe ⟷ or use ←/→ · 1/2/3 to switch roles
-            </div>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="mt-3 flex items-center justify-between">
-          <button onClick={prev} className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 transition text-sm">← Prev</button>
+        <div className="mt-3 flex items-center justify-between" style={{ width: deviceW, marginInline: 'auto' }}>
+          <button
+            onClick={prev}
+            className="px-3 py-1.5 rounded-md bg-[#14213D] text-white hover:bg-[#2f4982] transition text-sm"
+          >
+            ← Prev
+          </button>
+
           <div className="flex items-center gap-2">
             {roleCfg.screens.map((s, i) => (
               <button key={s.id} onClick={() => goToDot(i)} aria-label={`Go to ${s.label}`}>
                 <span
                   className="block h-2 w-2 rounded-full transition"
-                  style={{ background: i === index ? roleCfg.color : 'rgba(0,0,0,0.25)', transform: i === index ? 'scale(1.25)' : 'scale(1)' }}
+                  style={{
+                    background: i === index ? roleCfg.color : 'rgba(0,0,0,0.25)',
+                    transform: i === index ? 'scale(1.25)' : 'scale(1)',
+                  }}
                 />
               </button>
             ))}
           </div>
-          <button onClick={next} className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 transition text-sm">Next →</button>
+
+          <button
+            onClick={next}
+            className="px-3 py-1.5 rounded-md bg-[#14213D] text-white hover:bg-[#2f4982] transition text-sm"
+          >
+            Next →
+          </button>
         </div>
 
-        <div className="mt-2 text-center text-xs text-gray-600 dark:text-gray-300">
+        <div className="mt-2 text-center text-xs text-gray-600">
           {roleCfg.displayName} · {cur.label}
         </div>
       </div>
     </div>
   );
 }
-
-

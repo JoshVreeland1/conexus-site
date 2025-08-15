@@ -1,71 +1,77 @@
 <!DOCTYPE html><html lang="en"><head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Job Feed – Conexus Contractor</title>
-    
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Job Feed – Conexus Contractor</title>
+  <style>
     *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
     body{background:#F9FAFB;color:#1F1F1F;}
     button{cursor:pointer;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:14px;}
-    .btn-primary{background:#C75C24;color:#fff;} .btn-accept{background:#2BA84A;color:#fff;}
-    .pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;} .pill-open{background:#F0A202;}
+    .btn-primary{background:#C75C24;color:#fff;}
+    .btn-accept{background:#2BA84A;color:#fff;}
+    .pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;}
+    .pill-open{background:#F0A202;}
     .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:16px;}
     header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.05);}
     header h1{font-size:18px;font-weight:600;color:#14213D;}
-    footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
-    footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;} footer img{width:20px;height:20px;margin-bottom:4px;}
-    </style></head><body>
-    
-    <header>
-      <h1>Nearby Jobs</h1>
-      <button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="location.href='contractor-profile.html'">Profile</button>
-    </header>
-    
-    <main style="padding:24px 24px 90px;">
-      <!-- Job card -->
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-weight:600;">Pipe Burst – Unit 12B</div>
-          <span class="pill pill-open">New</span>
-        </div>
-        <div style="font-size:13px;margin-top:4px;">123 Lakeview Villas</div>
-        <div style="font-size:12px;margin-top:4px;color:#6C7A89;">2.4 mi • 10 min drive</div>
-        <div style="font-size:12px;margin-top:8px;color:#6C7A89;">Posted 5 min ago • Est. $350</div>
-    
-        <div style="display:flex;gap:10px;margin-top:14px;">
-          <button class="btn-accept" onclick="acceptJob(this)">Accept</button>
-          <button class="btn-primary" style="padding:6px 18px;font-size:12px;" onclick="openJob('contractor-job.html')">Details</button>
-        </div>
-      </div>
-    
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-weight:600;">AC Not Cooling – Unit 8A</div>
-          <span class="pill pill-open">New</span>
-        </div>
-        <div style="font-size:13px;margin-top:4px;">456 Summit Ridge</div>
-        <div style="font-size:12px;margin-top:4px;color:#6C7A89;">5.1 mi • 18 min drive</div>
-        <div style="font-size:12px;margin-top:8px;color:#6C7A89;">Posted 30 min ago • Est. $120</div>
-    
-        <div style="display:flex;gap:10px;margin-top:14px;">
-          <button class="btn-accept" onclick="acceptJob(this)">Accept</button>
-          <button class="btn-primary" style="padding:6px 18px;font-size:12px;" onclick="openJob('contractor-job.html')">Details</button>
-        </div>
-      </div>
-    </main>
-    
-    <footer>
-      <a href="contractor-feed.html"><img src="https://img.icons8.com/ios-filled/50/14213D/list.png">Feed</a>
-      <a href="contractor-jobs.html"><img src="https://img.icons8.com/ios-filled/50/14213D/maintenance.png">Jobs</a>
-      <a href="contractor-earnings.html"><img src="https://img.icons8.com/ios-filled/50/14213D/wallet.png">Earnings</a>
-      <a href="contractor-profile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/user.png">Profile</a>
-    </footer>
-    
-    <script>
-    function openJob(p){location.href=p;}
-    function acceptJob(btn){
-      btn.textContent='Accepted';btn.style.background='#6C7A89';btn.disabled=true;
-      alert('Job added to My Jobs'); // in real app push to backend
-    }
-    </script>
-    </body></html>
-    
+    footer{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0 calc(10px + env(safe-area-inset-bottom));box-shadow:0 -2px 6px rgba(0,0,0,.05);}
+    footer a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#14213D;}
+    footer img{width:20px;height:20px;margin-bottom:4px;}
+  </style>
+</head><body>
+
+<header>
+  <h1>Nearby Jobs</h1>
+</header>
+
+<main style="padding:24px 24px 120px;">
+  <!-- Pipe Burst -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-weight:600;">Pipe Burst – Unit 12B</div>
+      <span class="pill pill-open">New</span>
+    </div>
+    <div style="font-size:13px;margin-top:4px;">123 Lakeview Villas</div>
+    <div style="font-size:12px;margin-top:4px;color:#6C7A89;">2.4 mi • 10 min drive</div>
+    <div style="font-size:12px;margin-top:8px;color:#6C7A89;">Posted 5 min ago • Est. $350</div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn-accept" onclick="acceptJob(this)">Accept</button>
+      <button class="btn-primary" style="padding:6px 18px;font-size:12px;" onclick="openJob('contractor-job.html')">Details</button>
+    </div>
+  </div>
+
+  <!-- AC Not Cooling -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-weight:600;">AC Not Cooling – Unit 8A</div>
+      <span class="pill pill-open">New</span>
+    </div>
+    <div style="font-size:13px;margin-top:4px;">456 Summit Ridge</div>
+    <div style="font-size:12px;margin-top:4px;color:#6C7A89;">5.1 mi • 18 min drive</div>
+    <div style="font-size:12px;margin-top:8px;color:#6C7A89;">Posted 30 min ago • Est. $120</div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn-accept" onclick="acceptJob(this)">Accept</button>
+      <button class="btn-primary" style="padding:6px 18px;font-size:12px;" onclick="openJob('contractor-job-ac.html')">Details</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="contractor-feed.html"><img src="https://img.icons8.com/ios-filled/50/14213D/list.png" alt="">Feed</a>
+  <a href="contractor-jobs.html"><img src="https://img.icons8.com/ios-filled/50/14213D/maintenance.png" alt="">Jobs</a>
+  <a href="contractor-earnings.html"><img src="https://img.icons8.com/ios-filled/50/14213D/wallet.png" alt="">Earnings</a>
+  <a href="contractor-profile.html"><img src="https://img.icons8.com/ios-filled/50/14213D/user.png" alt="">Profile</a>
+</footer>
+
+<script>
+function openJob(p){ location.href = p; }
+function acceptJob(btn){
+  btn.textContent='Accepted';
+  btn.style.background='#6C7A89';
+  btn.disabled=true;
+  alert('Job added to My Jobs'); // placeholder for backend action
+}
+</script>
+
+</body></html>

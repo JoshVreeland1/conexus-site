@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Job #3060 – PM View</title>
+<title>Job #3059 – PM View</title>
 
-<!-- ===== SHARED INLINE STYLES ===== -->
+<!-- ===== SHARED INLINE STYLES (IDENTICAL ON BOTH PAGES) ===== -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
 body{background:#F9FAFB;color:#1F1F1F;}
@@ -21,6 +21,7 @@ header img{width:22px;height:22px;margin-right:12px;cursor:pointer;}
 header h1{font-size:18px;font-weight:600;color:#14213D;}
 .pill{padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;}
 .pill-open{background:#F0A202;}
+.pill-wait{background:#F0A202;}
 footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 24px;box-shadow:0 -2px 6px rgba(0,0,0,.05);}
 </style>
 </head>
@@ -28,59 +29,55 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 24px;
 
 <header>
   <img src="https://img.icons8.com/ios-filled/50/14213D/left.png" onclick="history.back()">
-  <h1>#3060 • Pipe Burst</h1>
+  <h1>#3059 • AC Not Cooling</h1>
 </header>
 
 <main style="padding:24px 24px 140px;">
   <!-- Job meta -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-weight:600;">Leaking kitchen pipe</div>
-      <span class="pill pill-open">Open</span>
+      <div style="font-weight:600;">AC blowing lukewarm air</div>
+      <span class="pill pill-wait">Await Quote</span>
     </div>
-    <div style="font-size:13px;margin-top:6px;">Unit 12B • 123 Lakeview Villas</div>
+    <div style="font-size:13px;margin-top:6px;">Unit 8A • 456 Summit Ridge</div>
     <p style="font-size:13px;margin-top:12px;line-height:1.4;">
-      Tenant reported water pooling beneath sink. Shut-off valve closed; drywall damp.
+      Tenant reports system running but not cooling. Thermostat set to 72°F, reads 79°F.
+      Filter replaced ~3 weeks ago. Humming noise from outdoor unit.
     </p>
     <!-- photo -->
-    <img src="/pipe_burst.png" alt="Issue photo" style="width:100%;border-radius:8px;margin-top:14px;">
+    <img src="/broken_ac.jpg" alt="Issue photo" style="width:100%;border-radius:8px;margin-top:14px;">
   </div>
 
   <!-- Quotes -->
   <h2 style="font-size:16px;font-weight:600;margin:6px 0 12px;">Contractor Quotes</h2>
 
-  <div class="card" id="quoteCard">
+  <!-- No quotes yet (same card position/spacing as the other page) -->
+  <div class="card" id="noQuotes">
     <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <div style="font-weight:600;">Bright Plumbing Co.</div>
-        <div style="font-size:13px;margin-top:2px;">ETA: 8/1 15:00 CST</div>
-      </div>
-      <div style="font-size:18px;font-weight:700;">$340</div>
+      <div style="font-weight:600;">No quotes yet</div>
+      <div style="font-size:12px;color:#6C7A89;">Waiting for contractor response</div>
     </div>
-
     <p style="font-size:13px;margin-top:12px;line-height:1.4;">
-      Replace damaged P-trap, dry wall patch, and moisture barrier install. 2-hr job.
+      We’ll notify you when a contractor submits a quote for your review.
     </p>
-
-    <div style="display:flex;gap:10px;margin-top:14px;">
-      <button class="btn-accept" style="flex:1;" onclick="approve()">Approve</button>
-      <button class="btn-reject" style="flex:1;" onclick="alert('Contractor will be notified');">Decline Bid</button>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <button class="btn-outline" onclick="location.href='pm-messages.html'">Message Tenant</button>
+      <button class="btn-outline" onclick="alert('Invite sent to preferred HVAC list')">Invite Preferred HVAC</button>
     </div>
   </div>
 </main>
 
-<!-- Sticky action footer -->
+<!-- Sticky action footer (IDENTICAL) -->
 <footer>
   <button class="btn-outline" style="width:100%;" onclick="location.href='pm-messages.html'">
     Message Tenant & Contractor
   </button>
 </footer>
 
-
 <script>
 function approve(){
-  document.getElementById('quoteCard').querySelector('.pill')?.remove();
-  // TODO: push approval to backend
+  // kept for parity with the other page (no-op until a quote appears)
+  document.getElementById('quoteCard')?.querySelector('.pill')?.remove();
 }
 </script>
 
